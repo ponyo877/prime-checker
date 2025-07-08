@@ -1,0 +1,173 @@
+version: '3'
+
+interval: 500ms
+
+tasks:
+  tsp:
+    cmds:
+      - tsp compile main.tsp --emit @typespec/openapi3
+    dir: ./typespec/
+    sources:
+      - typespec/**/*.tsp
+    generates:
+      - typespec/tsp-output/@typespec/openapi3/openapi.yaml
+
+  # frontend:
+  #   cmds:
+  #     - npm run dev
+  #   dir: ./web/admin
+  #   desc: "Run the Node.js development server"
+
+  # frontend-build:
+  #   deps: [npmi, openapi-client]
+  #   watch: true
+  #   cmds:
+  #     - cd ./web/admin && npm run build
+  #   sources:
+  #     - ./web/admin/package.json
+  #     - ./web/admin/package-lock.json
+  #     - ./web/admin/tsconfig.json
+  #     - ./web/admin/src/**/*.svelte
+  #   generates:
+  #     - ./web/admin/dist/index.html
+  #     - ./web/admin/dist/**/*.js
+  #   desc: "Build the frontend"
+
+  sqlc:
+    cmds:
+      - sqlc generate -f ./db/sqlc.yml
+    sources:
+      - ./db/sqlc.yml
+      - ./db/queries/*.sql
+      - ./db/init/schema.sql
+    generates:
+      - ./db/generated/db.go
+      - ./db/generated/models.go
+      - ./db/generated/public.sql.go
+    desc: "Generate SQLC code"
+
+  # sqlc:
+  #   deps: [sqlc-admin, sqlc-public]
+  #   desc: "Run SQLC generation for both admin and public databases"
+
+  # dev:
+  #   deps: [sqlc, frontend, frontend-build, ogen, openapi-client]
+  #   desc: "Run both SQLC generation and Node.js dev server"
+
+  # gen:
+  #   deps: [ogen, openapi-client, sqlc]
+  #   desc: "Generate OpenAPI server and client code"
+
+  ogen:
+    deps: ['tsp']
+    cmds:
+      - go generate ./main.go
+    sources:
+      - typespec/tsp-output/@typespec/openapi3/openapi.yaml
+      - ./main.go
+    generates:
+      - ./openapi/oas_cfg_gen.go
+      - ./openapi/oas_client_gen.go
+    desc: "Generate OpenAPI server code"
+
+  # npmi:
+  #   cmds:
+  #     - npm install
+  #   dir: ./web/admin
+  #   sources:
+  #     - ./web/admin/package.json
+  #     - ./web/admin/package-lock.json
+  #   desc: "Install npm dependencies"
+
+  # openapi-client:
+  #   deps: [npmi, tsp]
+  #   dir: ./web/admin
+  #   cmds:
+  #     - npm run generate-client
+  #   sources:
+  #     - typespec/tsp-output/@typespec/openapi3/openapi.yaml
+  #     - orval.config.ts
+  #   generates:
+  #     - ./src/generated-client/adminApi.ts
+  #     - ./src/generated-client/model
+  #   desc: "Generate OpenAPI client code with Orval"
+
+  # docker-build:
+  #   cmds:
+  #     - docker build -t blog4 .
+  #   sources:
+  #     - Dockerfile
+
+  # docker-run:
+  #   cmds:
+  #     - docker run --rm -it --env-file .env -p 8080:8080 blog4
+
+  db:up:
+    desc: "Start MySQL database with docker-compose"
+    cmds:
+      - docker compose up -d mysql
+  
+  db:down:
+    desc: "Stop MySQL database"
+    cmds:
+      - docker compose down
+  
+  db:logs:
+    desc: "Show MySQL logs"
+    cmds:
+      - docker compose logs -f mysql
+  
+  db:shell:
+    desc: "Open MySQL shell"
+    cmds:
+      - docker compose exec mysql mysql -u${MYSQL_USER:-roudoku} -p${MYSQL_PASSWORD:-roudoku_password} ${MYSQL_DATABASE:-roudoku} --default-character-set=utf8mb4
+  
+  db:reset:
+    desc: "Reset database (destroy and recreate)"
+    cmds:
+      - docker compose down -v
+      - docker compose up -d mysql
+  
+  db:seed:
+    desc: "Load seed data into database"
+    cmds:
+      - docker compose exec -T mysql mysql -u${MYSQL_USER:-roudoku} -p${MYSQL_PASSWORD:-roudoku_password} ${MYSQL_DATABASE:-roudoku} --default-character-set=utf8mb4 < server/db/init/seed.sql
+
+  # fmt:
+  #   desc: "Format Go code with goimports"
+  #   cmds:
+  #     - go fmt ./...
+  #     - goimports -w -local github.com/tokuhirom/blog4 .
+  #   sources:
+  #     - '**/*.go'
+
+  # lint:
+  #   desc: "Run linters"
+  #   cmds:
+  #     - goimports -d -local github.com/tokuhirom/blog4 .
+  #     - go vet ./...
+
+  # biome-format:
+  #   desc: "Format frontend code with Biome"
+  #   dir: ./web/admin
+  #   cmds:
+  #     - npm run format
+  #   sources:
+  #     - 'src/**/*.{js,ts,jsx,tsx,svelte,json,jsonc}'
+  #     - '*.{js,ts,json,jsonc}'
+
+  # biome-lint:
+  #   desc: "Lint frontend code with Biome"
+  #   dir: ./web/admin
+  #   cmds:
+  #     - npm run lint
+
+  # biome-check:
+  #   desc: "Check frontend code with Biome (format and lint)"
+  #   dir: ./web/admin
+  #   cmds:
+  #     - npx biome check .
+
+  # frontend-fmt:
+  #   desc: "Format and lint frontend code"
+  #   deps: [biome-format, biome-lint]

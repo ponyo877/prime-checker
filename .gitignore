@@ -1,0 +1,27 @@
+# VS Code
+.vscode/
+# MacOS
+.DS_Store
+
+# Default TypeSpec output
+tsp-output/
+dist/
+
+# Dependency directories
+node_modules/
+
+.env
+.envrc
+/db/mariadb/
+/.task/checksum/
+deploy.json
+app.jsonnet
+app.json
+
+# Binary
+/blog4
+
+# Air temporary files
+tmp
+
+REQUEIRMENTS**
