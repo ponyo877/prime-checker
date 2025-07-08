@@ -8,18 +8,18 @@ import (
 
 // Handler handles operations described by OpenAPI v3 specification.
 type Handler interface {
-	// PrimeTestsCreate implements PrimeTests_create operation.
+	// PrimeChecksCreate implements PrimeChecks_create operation.
 	//
-	// POST /primality-tests
-	PrimeTestsCreate(ctx context.Context, req *PrimeTestRequest) (*PrimeTest, error)
-	// PrimeTestsGet implements PrimeTests_get operation.
+	// POST /prime-check
+	PrimeChecksCreate(ctx context.Context, req *PrimeCheckInput) (*PrimeCheck, error)
+	// PrimeChecksGet implements PrimeChecks_get operation.
 	//
-	// GET /primality-tests/{request_id}
-	PrimeTestsGet(ctx context.Context, params PrimeTestsGetParams) (*PrimeTest, error)
-	// PrimeTestsList implements PrimeTests_list operation.
+	// GET /prime-check/{request_id}
+	PrimeChecksGet(ctx context.Context, params PrimeChecksGetParams) (*PrimeCheck, error)
+	// PrimeChecksList implements PrimeChecks_list operation.
 	//
-	// GET /primality-tests
-	PrimeTestsList(ctx context.Context) (*PrimeTestList, error)
+	// GET /prime-check
+	PrimeChecksList(ctx context.Context) (*PrimeCheckList, error)
 	// SettingsCreate implements Settings_create operation.
 	//
 	// POST /settings

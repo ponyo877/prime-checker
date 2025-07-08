@@ -21,44 +21,46 @@ func NewRepository(db *sql.DB) usecase.Repository {
 	}
 }
 
-func (r *Repository) ListBooksByWord(word string) ([]*model.Book, error) {
-	ctx := context.Background()
-	var books []*model.Book
-
-	// Use LIKE search for short words (less than 2 characters due to ngram_token_size=2)
-	if len([]rune(word)) < 2 {
-		likePattern := word + "%"
-		sqlcBooks, err := r.queries.SearchBooksByPattern(ctx, generated_sql.SearchBooksByPatternParams{
-			Title:  likePattern,
-			Author: likePattern,
-		})
-		if err != nil {
-			return nil, err
-		}
-
-		for _, book := range sqlcBooks {
-			books = append(books, model.NewBook(book.ID, book.Title, book.Author, "", book.CreatedAt))
-		}
-	} else {
-		// sqlc not support full-text search so use raw SQL query
-		query := "SELECT * FROM books WHERE MATCH (title, author) AGAINST (? IN BOOLEAN MODE)"
-		rows, err := r.db.Query(query, word)
-		if err != nil {
-			return nil, err
-		}
-		defer rows.Close()
-
-		for rows.Next() {
-			var book generated_sql.Book
-			if err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.PublishedAt, &book.CreatedAt); err != nil {
-				return nil, err
-			}
-			books = append(books, model.NewBook(book.ID, book.Title, book.Author, "", book.CreatedAt))
-		}
-		if err := rows.Err(); err != nil {
-			return nil, err
-		}
+func (r *Repository) CreatePrimeCheck(ctx context.Context, userID int32, numberText string) (*model.PrimeCheck, error) {
+	result, err := r.queries.CreatePrimeCheck(ctx, generated_sql.CreatePrimeCheckParams{
+		UserID:     userID,
+		NumberText: numberText,
+	})
+	if err != nil {
+		return nil, err
 	}
 
-	return books, nil
+	id, err := result.LastInsertId()
+	if err != nil {
+		return nil, err
+	}
+
+	test, err := r.queries.GetPrimeCheck(ctx, int32(id))
+	if err != nil {
+		return nil, err
+	}
+
+	return model.NewPrimeCheck(test.ID, test.UserID, test.NumberText, test.CreatedAt, test.UpdatedAt), nil
+}
+
+func (r *Repository) GetPrimeCheck(ctx context.Context, id int32) (*model.PrimeCheck, error) {
+	test, err := r.queries.GetPrimeCheck(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return model.NewPrimeCheck(test.ID, test.UserID, test.NumberText, test.CreatedAt, test.UpdatedAt), nil
+}
+
+func (r *Repository) ListPrimeChecks(ctx context.Context) ([]*model.PrimeCheck, error) {
+	tests, err := r.queries.ListPrimeChecks(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]*model.PrimeCheck, len(tests))
+	for i, test := range tests {
+		result[i] = model.NewPrimeCheck(test.ID, test.UserID, test.NumberText, test.CreatedAt, test.UpdatedAt)
+	}
+	return result, nil
 }

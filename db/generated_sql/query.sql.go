@@ -7,68 +7,63 @@ package generated_sql
 
 import (
 	"context"
+	"database/sql"
 )
 
-const searchBooksByPattern = `-- name: SearchBooksByPattern :many
-SELECT id, title, author, published_at, created_at FROM books WHERE title LIKE ? OR author LIKE ?
+const createPrimeCheck = `-- name: CreatePrimeCheck :execresult
+INSERT INTO prime_requests (user_id, number_text)
+VALUES (?, ?)
 `
 
-type SearchBooksByPatternParams struct {
-	Title  string
-	Author string
+type CreatePrimeCheckParams struct {
+	UserID     int32
+	NumberText string
 }
 
-func (q *Queries) SearchBooksByPattern(ctx context.Context, arg SearchBooksByPatternParams) ([]Book, error) {
-	rows, err := q.db.QueryContext(ctx, searchBooksByPattern, arg.Title, arg.Author)
+func (q *Queries) CreatePrimeCheck(ctx context.Context, arg CreatePrimeCheckParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, createPrimeCheck, arg.UserID, arg.NumberText)
+}
+
+const getPrimeCheck = `-- name: GetPrimeCheck :one
+SELECT id, user_id, number_text, created_at, updated_at
+FROM prime_requests
+WHERE id = ?
+`
+
+func (q *Queries) GetPrimeCheck(ctx context.Context, id int32) (PrimeRequest, error) {
+	row := q.db.QueryRowContext(ctx, getPrimeCheck, id)
+	var i PrimeRequest
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.NumberText,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const listPrimeChecks = `-- name: ListPrimeChecks :many
+SELECT id, user_id, number_text, created_at, updated_at
+FROM prime_requests
+ORDER BY created_at DESC
+`
+
+func (q *Queries) ListPrimeChecks(ctx context.Context) ([]PrimeRequest, error) {
+	rows, err := q.db.QueryContext(ctx, listPrimeChecks)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Book
+	var items []PrimeRequest
 	for rows.Next() {
-		var i Book
+		var i PrimeRequest
 		if err := rows.Scan(
 			&i.ID,
-			&i.Title,
-			&i.Author,
-			&i.PublishedAt,
+			&i.UserID,
+			&i.NumberText,
 			&i.CreatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const searchBooksFullText = `-- name: SearchBooksFullText :many
-SELECT id, title, author, published_at, created_at 
-FROM books 
-WHERE MATCH(title, author) AGAINST(? IN BOOLEAN MODE)
-`
-
-// This query uses full-text search capabilities to find books by title or author.
-func (q *Queries) SearchBooksFullText(ctx context.Context) ([]Book, error) {
-	rows, err := q.db.QueryContext(ctx, searchBooksFullText)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Book
-	for rows.Next() {
-		var i Book
-		if err := rows.Scan(
-			&i.ID,
-			&i.Title,
-			&i.Author,
-			&i.PublishedAt,
-			&i.CreatedAt,
+			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}

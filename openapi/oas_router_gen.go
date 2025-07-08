@@ -61,9 +61,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				break
 			}
 			switch elem[0] {
-			case 'p': // Prefix: "primality-tests"
+			case 'p': // Prefix: "prime-check"
 
-				if l := len("primality-tests"); len(elem) >= l && elem[0:l] == "primality-tests" {
+				if l := len("prime-check"); len(elem) >= l && elem[0:l] == "prime-check" {
 					elem = elem[l:]
 				} else {
 					break
@@ -72,9 +72,9 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				if len(elem) == 0 {
 					switch r.Method {
 					case "GET":
-						s.handlePrimeTestsListRequest([0]string{}, elemIsEscaped, w, r)
+						s.handlePrimeChecksListRequest([0]string{}, elemIsEscaped, w, r)
 					case "POST":
-						s.handlePrimeTestsCreateRequest([0]string{}, elemIsEscaped, w, r)
+						s.handlePrimeChecksCreateRequest([0]string{}, elemIsEscaped, w, r)
 					default:
 						s.notAllowed(w, r, "GET,POST")
 					}
@@ -103,7 +103,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 						// Leaf node.
 						switch r.Method {
 						case "GET":
-							s.handlePrimeTestsGetRequest([1]string{
+							s.handlePrimeChecksGetRequest([1]string{
 								args[0],
 							}, elemIsEscaped, w, r)
 						default:
@@ -231,9 +231,9 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				break
 			}
 			switch elem[0] {
-			case 'p': // Prefix: "primality-tests"
+			case 'p': // Prefix: "prime-check"
 
-				if l := len("primality-tests"); len(elem) >= l && elem[0:l] == "primality-tests" {
+				if l := len("prime-check"); len(elem) >= l && elem[0:l] == "prime-check" {
 					elem = elem[l:]
 				} else {
 					break
@@ -242,18 +242,18 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 				if len(elem) == 0 {
 					switch method {
 					case "GET":
-						r.name = PrimeTestsListOperation
+						r.name = PrimeChecksListOperation
 						r.summary = ""
-						r.operationID = "PrimeTests_list"
-						r.pathPattern = "/primality-tests"
+						r.operationID = "PrimeChecks_list"
+						r.pathPattern = "/prime-check"
 						r.args = args
 						r.count = 0
 						return r, true
 					case "POST":
-						r.name = PrimeTestsCreateOperation
+						r.name = PrimeChecksCreateOperation
 						r.summary = ""
-						r.operationID = "PrimeTests_create"
-						r.pathPattern = "/primality-tests"
+						r.operationID = "PrimeChecks_create"
+						r.pathPattern = "/prime-check"
 						r.args = args
 						r.count = 0
 						return r, true
@@ -283,10 +283,10 @@ func (s *Server) FindPath(method string, u *url.URL) (r Route, _ bool) {
 						// Leaf node.
 						switch method {
 						case "GET":
-							r.name = PrimeTestsGetOperation
+							r.name = PrimeChecksGetOperation
 							r.summary = ""
-							r.operationID = "PrimeTests_get"
-							r.pathPattern = "/primality-tests/{request_id}"
+							r.operationID = "PrimeChecks_get"
+							r.pathPattern = "/prime-check/{request_id}"
 							r.args = args
 							r.count = 1
 							return r, true

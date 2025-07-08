@@ -13,7 +13,7 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
-func encodePrimeTestsCreateResponse(response *PrimeTest, w http.ResponseWriter, span trace.Span) error {
+func encodePrimeChecksCreateResponse(response *PrimeCheck, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -27,7 +27,7 @@ func encodePrimeTestsCreateResponse(response *PrimeTest, w http.ResponseWriter, 
 	return nil
 }
 
-func encodePrimeTestsGetResponse(response *PrimeTest, w http.ResponseWriter, span trace.Span) error {
+func encodePrimeChecksGetResponse(response *PrimeCheck, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))
@@ -41,7 +41,7 @@ func encodePrimeTestsGetResponse(response *PrimeTest, w http.ResponseWriter, spa
 	return nil
 }
 
-func encodePrimeTestsListResponse(response *PrimeTestList, w http.ResponseWriter, span trace.Span) error {
+func encodePrimeChecksListResponse(response *PrimeCheckList, w http.ResponseWriter, span trace.Span) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(200)
 	span.SetStatus(codes.Ok, http.StatusText(200))

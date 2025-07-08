@@ -127,14 +127,14 @@ func (s *Error) UnmarshalJSON(data []byte) error {
 }
 
 // Encode implements json.Marshaler.
-func (s *PrimeTest) Encode(e *jx.Encoder) {
+func (s *PrimeCheck) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *PrimeTest) encodeFields(e *jx.Encoder) {
+func (s *PrimeCheck) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("id")
 		e.Int32(s.ID)
@@ -149,16 +149,16 @@ func (s *PrimeTest) encodeFields(e *jx.Encoder) {
 	}
 }
 
-var jsonFieldsNameOfPrimeTest = [3]string{
+var jsonFieldsNameOfPrimeCheck = [3]string{
 	0: "id",
 	1: "number",
 	2: "created_at",
 }
 
-// Decode decodes PrimeTest from json.
-func (s *PrimeTest) Decode(d *jx.Decoder) error {
+// Decode decodes PrimeCheck from json.
+func (s *PrimeCheck) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode PrimeTest to nil")
+		return errors.New("invalid: unable to decode PrimeCheck to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -205,7 +205,7 @@ func (s *PrimeTest) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode PrimeTest")
+		return errors.Wrap(err, "decode PrimeCheck")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -222,8 +222,8 @@ func (s *PrimeTest) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfPrimeTest) {
-					name = jsonFieldsNameOfPrimeTest[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfPrimeCheck) {
+					name = jsonFieldsNameOfPrimeCheck[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -244,147 +244,41 @@ func (s *PrimeTest) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *PrimeTest) MarshalJSON() ([]byte, error) {
+func (s *PrimeCheck) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PrimeTest) UnmarshalJSON(data []byte) error {
+func (s *PrimeCheck) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
 
 // Encode implements json.Marshaler.
-func (s *PrimeTestList) Encode(e *jx.Encoder) {
+func (s *PrimeCheckInput) Encode(e *jx.Encoder) {
 	e.ObjStart()
 	s.encodeFields(e)
 	e.ObjEnd()
 }
 
 // encodeFields encodes fields.
-func (s *PrimeTestList) encodeFields(e *jx.Encoder) {
-	{
-		e.FieldStart("items")
-		e.ArrStart()
-		for _, elem := range s.Items {
-			elem.Encode(e)
-		}
-		e.ArrEnd()
-	}
-}
-
-var jsonFieldsNameOfPrimeTestList = [1]string{
-	0: "items",
-}
-
-// Decode decodes PrimeTestList from json.
-func (s *PrimeTestList) Decode(d *jx.Decoder) error {
-	if s == nil {
-		return errors.New("invalid: unable to decode PrimeTestList to nil")
-	}
-	var requiredBitSet [1]uint8
-
-	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
-		switch string(k) {
-		case "items":
-			requiredBitSet[0] |= 1 << 0
-			if err := func() error {
-				s.Items = make([]PrimeTest, 0)
-				if err := d.Arr(func(d *jx.Decoder) error {
-					var elem PrimeTest
-					if err := elem.Decode(d); err != nil {
-						return err
-					}
-					s.Items = append(s.Items, elem)
-					return nil
-				}); err != nil {
-					return err
-				}
-				return nil
-			}(); err != nil {
-				return errors.Wrap(err, "decode field \"items\"")
-			}
-		default:
-			return d.Skip()
-		}
-		return nil
-	}); err != nil {
-		return errors.Wrap(err, "decode PrimeTestList")
-	}
-	// Validate required fields.
-	var failures []validate.FieldError
-	for i, mask := range [1]uint8{
-		0b00000001,
-	} {
-		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
-			// Mask only required fields and check equality to mask using XOR.
-			//
-			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
-			// Bits of fields which would be set are actually bits of missed fields.
-			missed := bits.OnesCount8(result)
-			for bitN := 0; bitN < missed; bitN++ {
-				bitIdx := bits.TrailingZeros8(result)
-				fieldIdx := i*8 + bitIdx
-				var name string
-				if fieldIdx < len(jsonFieldsNameOfPrimeTestList) {
-					name = jsonFieldsNameOfPrimeTestList[fieldIdx]
-				} else {
-					name = strconv.Itoa(fieldIdx)
-				}
-				failures = append(failures, validate.FieldError{
-					Name:  name,
-					Error: validate.ErrFieldRequired,
-				})
-				// Reset bit.
-				result &^= 1 << bitIdx
-			}
-		}
-	}
-	if len(failures) > 0 {
-		return &validate.Error{Fields: failures}
-	}
-
-	return nil
-}
-
-// MarshalJSON implements stdjson.Marshaler.
-func (s *PrimeTestList) MarshalJSON() ([]byte, error) {
-	e := jx.Encoder{}
-	s.Encode(&e)
-	return e.Bytes(), nil
-}
-
-// UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PrimeTestList) UnmarshalJSON(data []byte) error {
-	d := jx.DecodeBytes(data)
-	return s.Decode(d)
-}
-
-// Encode implements json.Marshaler.
-func (s *PrimeTestRequest) Encode(e *jx.Encoder) {
-	e.ObjStart()
-	s.encodeFields(e)
-	e.ObjEnd()
-}
-
-// encodeFields encodes fields.
-func (s *PrimeTestRequest) encodeFields(e *jx.Encoder) {
+func (s *PrimeCheckInput) encodeFields(e *jx.Encoder) {
 	{
 		e.FieldStart("number")
 		e.Str(s.Number)
 	}
 }
 
-var jsonFieldsNameOfPrimeTestRequest = [1]string{
+var jsonFieldsNameOfPrimeCheckInput = [1]string{
 	0: "number",
 }
 
-// Decode decodes PrimeTestRequest from json.
-func (s *PrimeTestRequest) Decode(d *jx.Decoder) error {
+// Decode decodes PrimeCheckInput from json.
+func (s *PrimeCheckInput) Decode(d *jx.Decoder) error {
 	if s == nil {
-		return errors.New("invalid: unable to decode PrimeTestRequest to nil")
+		return errors.New("invalid: unable to decode PrimeCheckInput to nil")
 	}
 	var requiredBitSet [1]uint8
 
@@ -407,7 +301,7 @@ func (s *PrimeTestRequest) Decode(d *jx.Decoder) error {
 		}
 		return nil
 	}); err != nil {
-		return errors.Wrap(err, "decode PrimeTestRequest")
+		return errors.Wrap(err, "decode PrimeCheckInput")
 	}
 	// Validate required fields.
 	var failures []validate.FieldError
@@ -424,8 +318,8 @@ func (s *PrimeTestRequest) Decode(d *jx.Decoder) error {
 				bitIdx := bits.TrailingZeros8(result)
 				fieldIdx := i*8 + bitIdx
 				var name string
-				if fieldIdx < len(jsonFieldsNameOfPrimeTestRequest) {
-					name = jsonFieldsNameOfPrimeTestRequest[fieldIdx]
+				if fieldIdx < len(jsonFieldsNameOfPrimeCheckInput) {
+					name = jsonFieldsNameOfPrimeCheckInput[fieldIdx]
 				} else {
 					name = strconv.Itoa(fieldIdx)
 				}
@@ -446,14 +340,120 @@ func (s *PrimeTestRequest) Decode(d *jx.Decoder) error {
 }
 
 // MarshalJSON implements stdjson.Marshaler.
-func (s *PrimeTestRequest) MarshalJSON() ([]byte, error) {
+func (s *PrimeCheckInput) MarshalJSON() ([]byte, error) {
 	e := jx.Encoder{}
 	s.Encode(&e)
 	return e.Bytes(), nil
 }
 
 // UnmarshalJSON implements stdjson.Unmarshaler.
-func (s *PrimeTestRequest) UnmarshalJSON(data []byte) error {
+func (s *PrimeCheckInput) UnmarshalJSON(data []byte) error {
+	d := jx.DecodeBytes(data)
+	return s.Decode(d)
+}
+
+// Encode implements json.Marshaler.
+func (s *PrimeCheckList) Encode(e *jx.Encoder) {
+	e.ObjStart()
+	s.encodeFields(e)
+	e.ObjEnd()
+}
+
+// encodeFields encodes fields.
+func (s *PrimeCheckList) encodeFields(e *jx.Encoder) {
+	{
+		e.FieldStart("items")
+		e.ArrStart()
+		for _, elem := range s.Items {
+			elem.Encode(e)
+		}
+		e.ArrEnd()
+	}
+}
+
+var jsonFieldsNameOfPrimeCheckList = [1]string{
+	0: "items",
+}
+
+// Decode decodes PrimeCheckList from json.
+func (s *PrimeCheckList) Decode(d *jx.Decoder) error {
+	if s == nil {
+		return errors.New("invalid: unable to decode PrimeCheckList to nil")
+	}
+	var requiredBitSet [1]uint8
+
+	if err := d.ObjBytes(func(d *jx.Decoder, k []byte) error {
+		switch string(k) {
+		case "items":
+			requiredBitSet[0] |= 1 << 0
+			if err := func() error {
+				s.Items = make([]PrimeCheck, 0)
+				if err := d.Arr(func(d *jx.Decoder) error {
+					var elem PrimeCheck
+					if err := elem.Decode(d); err != nil {
+						return err
+					}
+					s.Items = append(s.Items, elem)
+					return nil
+				}); err != nil {
+					return err
+				}
+				return nil
+			}(); err != nil {
+				return errors.Wrap(err, "decode field \"items\"")
+			}
+		default:
+			return d.Skip()
+		}
+		return nil
+	}); err != nil {
+		return errors.Wrap(err, "decode PrimeCheckList")
+	}
+	// Validate required fields.
+	var failures []validate.FieldError
+	for i, mask := range [1]uint8{
+		0b00000001,
+	} {
+		if result := (requiredBitSet[i] & mask) ^ mask; result != 0 {
+			// Mask only required fields and check equality to mask using XOR.
+			//
+			// If XOR result is not zero, result is not equal to expected, so some fields are missed.
+			// Bits of fields which would be set are actually bits of missed fields.
+			missed := bits.OnesCount8(result)
+			for bitN := 0; bitN < missed; bitN++ {
+				bitIdx := bits.TrailingZeros8(result)
+				fieldIdx := i*8 + bitIdx
+				var name string
+				if fieldIdx < len(jsonFieldsNameOfPrimeCheckList) {
+					name = jsonFieldsNameOfPrimeCheckList[fieldIdx]
+				} else {
+					name = strconv.Itoa(fieldIdx)
+				}
+				failures = append(failures, validate.FieldError{
+					Name:  name,
+					Error: validate.ErrFieldRequired,
+				})
+				// Reset bit.
+				result &^= 1 << bitIdx
+			}
+		}
+	}
+	if len(failures) > 0 {
+		return &validate.Error{Fields: failures}
+	}
+
+	return nil
+}
+
+// MarshalJSON implements stdjson.Marshaler.
+func (s *PrimeCheckList) MarshalJSON() ([]byte, error) {
+	e := jx.Encoder{}
+	s.Encode(&e)
+	return e.Bytes(), nil
+}
+
+// UnmarshalJSON implements stdjson.Unmarshaler.
+func (s *PrimeCheckList) UnmarshalJSON(data []byte) error {
 	d := jx.DecodeBytes(data)
 	return s.Decode(d)
 }
@@ -472,8 +472,8 @@ func (s *Setting) encodeFields(e *jx.Encoder) {
 		e.Bool(s.RecordNumberSuccess)
 	}
 	{
-		e.FieldStart("primality_test_success")
-		e.Bool(s.PrimalityTestSuccess)
+		e.FieldStart("prime_request_success")
+		e.Bool(s.PrimeRequestSuccess)
 	}
 	{
 		e.FieldStart("email_send_success")
@@ -487,7 +487,7 @@ func (s *Setting) encodeFields(e *jx.Encoder) {
 
 var jsonFieldsNameOfSetting = [4]string{
 	0: "record_number_success",
-	1: "primality_test_success",
+	1: "prime_request_success",
 	2: "email_send_success",
 	3: "dlq_save_success",
 }
@@ -513,17 +513,17 @@ func (s *Setting) Decode(d *jx.Decoder) error {
 			}(); err != nil {
 				return errors.Wrap(err, "decode field \"record_number_success\"")
 			}
-		case "primality_test_success":
+		case "prime_request_success":
 			requiredBitSet[0] |= 1 << 1
 			if err := func() error {
 				v, err := d.Bool()
-				s.PrimalityTestSuccess = bool(v)
+				s.PrimeRequestSuccess = bool(v)
 				if err != nil {
 					return err
 				}
 				return nil
 			}(); err != nil {
-				return errors.Wrap(err, "decode field \"primality_test_success\"")
+				return errors.Wrap(err, "decode field \"prime_request_success\"")
 			}
 		case "email_send_success":
 			requiredBitSet[0] |= 1 << 2

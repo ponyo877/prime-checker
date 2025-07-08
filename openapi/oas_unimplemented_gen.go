@@ -13,24 +13,24 @@ type UnimplementedHandler struct{}
 
 var _ Handler = UnimplementedHandler{}
 
-// PrimeTestsCreate implements PrimeTests_create operation.
+// PrimeChecksCreate implements PrimeChecks_create operation.
 //
-// POST /primality-tests
-func (UnimplementedHandler) PrimeTestsCreate(ctx context.Context, req *PrimeTestRequest) (r *PrimeTest, _ error) {
+// POST /prime-check
+func (UnimplementedHandler) PrimeChecksCreate(ctx context.Context, req *PrimeCheckInput) (r *PrimeCheck, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
-// PrimeTestsGet implements PrimeTests_get operation.
+// PrimeChecksGet implements PrimeChecks_get operation.
 //
-// GET /primality-tests/{request_id}
-func (UnimplementedHandler) PrimeTestsGet(ctx context.Context, params PrimeTestsGetParams) (r *PrimeTest, _ error) {
+// GET /prime-check/{request_id}
+func (UnimplementedHandler) PrimeChecksGet(ctx context.Context, params PrimeChecksGetParams) (r *PrimeCheck, _ error) {
 	return r, ht.ErrNotImplemented
 }
 
-// PrimeTestsList implements PrimeTests_list operation.
+// PrimeChecksList implements PrimeChecks_list operation.
 //
-// GET /primality-tests
-func (UnimplementedHandler) PrimeTestsList(ctx context.Context) (r *PrimeTestList, _ error) {
+// GET /prime-check
+func (UnimplementedHandler) PrimeChecksList(ctx context.Context) (r *PrimeCheckList, _ error) {
 	return r, ht.ErrNotImplemented
 }
 

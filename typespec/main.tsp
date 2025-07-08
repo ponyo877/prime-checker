@@ -1,26 +1,26 @@
 import "@typespec/http";
 
 using Http;
-@service(#{ title: "Prime Test Service" })
-namespace PrimeTestService;
+@service(#{ title: "Prime Check Service" })
+namespace PrimeCheckService;
 
-model PrimeTest {
+model PrimeCheck {
   id: int32;
   number: string;
   created_at: utcDateTime;
 }
 
-model PrimeTestRequest {
+model PrimeCheckInput {
   number: string;
 }
 
-model PrimeTestList {
-  items: PrimeTest[];
+model PrimeCheckList {
+  items: PrimeCheck[];
 }
 
 model Setting {
   record_number_success: boolean;
-  primality_test_success: boolean;
+  prime_request_success: boolean;
   email_send_success: boolean;
   dlq_save_success: boolean;
 }
@@ -31,12 +31,12 @@ model Error {
   message: string;
 }
 
-@route("/primality-tests")
-@tag("PrimeTests")
-interface PrimeTests {
-  @get get(@path request_id: int32): PrimeTest | Error;
-  @get list(): PrimeTestList | Error;
-  @post create(@body body: PrimeTestRequest): PrimeTest | Error;
+@route("/prime-check")
+@tag("PrimeChecks")
+interface PrimeChecks {
+  @get get(@path request_id: int32): PrimeCheck | Error;
+  @get list(): PrimeCheckList | Error;
+  @post create(@body body: PrimeCheckInput): PrimeCheck | Error;
 }
 
 @route("/settings")

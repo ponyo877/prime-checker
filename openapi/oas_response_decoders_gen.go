@@ -14,7 +14,7 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func decodePrimeTestsCreateResponse(resp *http.Response) (res *PrimeTest, _ error) {
+func decodePrimeChecksCreateResponse(resp *http.Response) (res *PrimeCheck, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -30,7 +30,7 @@ func decodePrimeTestsCreateResponse(resp *http.Response) (res *PrimeTest, _ erro
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response PrimeTest
+			var response PrimeCheck
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -97,7 +97,7 @@ func decodePrimeTestsCreateResponse(resp *http.Response) (res *PrimeTest, _ erro
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodePrimeTestsGetResponse(resp *http.Response) (res *PrimeTest, _ error) {
+func decodePrimeChecksGetResponse(resp *http.Response) (res *PrimeCheck, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -113,7 +113,7 @@ func decodePrimeTestsGetResponse(resp *http.Response) (res *PrimeTest, _ error) 
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response PrimeTest
+			var response PrimeCheck
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err
@@ -180,7 +180,7 @@ func decodePrimeTestsGetResponse(resp *http.Response) (res *PrimeTest, _ error) 
 	return res, errors.Wrap(defRes, "error")
 }
 
-func decodePrimeTestsListResponse(resp *http.Response) (res *PrimeTestList, _ error) {
+func decodePrimeChecksListResponse(resp *http.Response) (res *PrimeCheckList, _ error) {
 	switch resp.StatusCode {
 	case 200:
 		// Code 200.
@@ -196,7 +196,7 @@ func decodePrimeTestsListResponse(resp *http.Response) (res *PrimeTestList, _ er
 			}
 			d := jx.DecodeBytes(buf)
 
-			var response PrimeTestList
+			var response PrimeCheckList
 			if err := func() error {
 				if err := response.Decode(d); err != nil {
 					return err

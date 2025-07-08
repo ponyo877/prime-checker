@@ -8,7 +8,7 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func (s *PrimeTestList) Validate() error {
+func (s *PrimeCheckList) Validate() error {
 	if s == nil {
 		return validate.ErrNilPointer
 	}

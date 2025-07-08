@@ -63,79 +63,79 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
-// Ref: #/components/schemas/PrimeTest
-type PrimeTest struct {
+// Ref: #/components/schemas/PrimeCheck
+type PrimeCheck struct {
 	ID        int32     `json:"id"`
 	Number    string    `json:"number"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
 // GetID returns the value of ID.
-func (s *PrimeTest) GetID() int32 {
+func (s *PrimeCheck) GetID() int32 {
 	return s.ID
 }
 
 // GetNumber returns the value of Number.
-func (s *PrimeTest) GetNumber() string {
+func (s *PrimeCheck) GetNumber() string {
 	return s.Number
 }
 
 // GetCreatedAt returns the value of CreatedAt.
-func (s *PrimeTest) GetCreatedAt() time.Time {
+func (s *PrimeCheck) GetCreatedAt() time.Time {
 	return s.CreatedAt
 }
 
 // SetID sets the value of ID.
-func (s *PrimeTest) SetID(val int32) {
+func (s *PrimeCheck) SetID(val int32) {
 	s.ID = val
 }
 
 // SetNumber sets the value of Number.
-func (s *PrimeTest) SetNumber(val string) {
+func (s *PrimeCheck) SetNumber(val string) {
 	s.Number = val
 }
 
 // SetCreatedAt sets the value of CreatedAt.
-func (s *PrimeTest) SetCreatedAt(val time.Time) {
+func (s *PrimeCheck) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
 }
 
-// Ref: #/components/schemas/PrimeTestList
-type PrimeTestList struct {
-	Items []PrimeTest `json:"items"`
-}
-
-// GetItems returns the value of Items.
-func (s *PrimeTestList) GetItems() []PrimeTest {
-	return s.Items
-}
-
-// SetItems sets the value of Items.
-func (s *PrimeTestList) SetItems(val []PrimeTest) {
-	s.Items = val
-}
-
-// Ref: #/components/schemas/PrimeTestRequest
-type PrimeTestRequest struct {
+// Ref: #/components/schemas/PrimeCheckInput
+type PrimeCheckInput struct {
 	Number string `json:"number"`
 }
 
 // GetNumber returns the value of Number.
-func (s *PrimeTestRequest) GetNumber() string {
+func (s *PrimeCheckInput) GetNumber() string {
 	return s.Number
 }
 
 // SetNumber sets the value of Number.
-func (s *PrimeTestRequest) SetNumber(val string) {
+func (s *PrimeCheckInput) SetNumber(val string) {
 	s.Number = val
+}
+
+// Ref: #/components/schemas/PrimeCheckList
+type PrimeCheckList struct {
+	Items []PrimeCheck `json:"items"`
+}
+
+// GetItems returns the value of Items.
+func (s *PrimeCheckList) GetItems() []PrimeCheck {
+	return s.Items
+}
+
+// SetItems sets the value of Items.
+func (s *PrimeCheckList) SetItems(val []PrimeCheck) {
+	s.Items = val
 }
 
 // Ref: #/components/schemas/Setting
 type Setting struct {
-	RecordNumberSuccess  bool `json:"record_number_success"`
-	PrimalityTestSuccess bool `json:"primality_test_success"`
-	EmailSendSuccess     bool `json:"email_send_success"`
-	DlqSaveSuccess       bool `json:"dlq_save_success"`
+	RecordNumberSuccess bool `json:"record_number_success"`
+	PrimeRequestSuccess bool `json:"prime_request_success"`
+	EmailSendSuccess    bool `json:"email_send_success"`
+	DlqSaveSuccess      bool `json:"dlq_save_success"`
 }
 
 // GetRecordNumberSuccess returns the value of RecordNumberSuccess.
@@ -143,9 +143,9 @@ func (s *Setting) GetRecordNumberSuccess() bool {
 	return s.RecordNumberSuccess
 }
 
-// GetPrimalityTestSuccess returns the value of PrimalityTestSuccess.
-func (s *Setting) GetPrimalityTestSuccess() bool {
-	return s.PrimalityTestSuccess
+// GetPrimeRequestSuccess returns the value of PrimeRequestSuccess.
+func (s *Setting) GetPrimeRequestSuccess() bool {
+	return s.PrimeRequestSuccess
 }
 
 // GetEmailSendSuccess returns the value of EmailSendSuccess.
@@ -163,9 +163,9 @@ func (s *Setting) SetRecordNumberSuccess(val bool) {
 	s.RecordNumberSuccess = val
 }
 
-// SetPrimalityTestSuccess sets the value of PrimalityTestSuccess.
-func (s *Setting) SetPrimalityTestSuccess(val bool) {
-	s.PrimalityTestSuccess = val
+// SetPrimeRequestSuccess sets the value of PrimeRequestSuccess.
+func (s *Setting) SetPrimeRequestSuccess(val bool) {
+	s.PrimeRequestSuccess = val
 }
 
 // SetEmailSendSuccess sets the value of EmailSendSuccess.

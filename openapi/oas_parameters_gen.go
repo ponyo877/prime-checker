@@ -15,12 +15,12 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-// PrimeTestsGetParams is parameters of PrimeTests_get operation.
-type PrimeTestsGetParams struct {
+// PrimeChecksGetParams is parameters of PrimeChecks_get operation.
+type PrimeChecksGetParams struct {
 	RequestID int32
 }
 
-func unpackPrimeTestsGetParams(packed middleware.Parameters) (params PrimeTestsGetParams) {
+func unpackPrimeChecksGetParams(packed middleware.Parameters) (params PrimeChecksGetParams) {
 	{
 		key := middleware.ParameterKey{
 			Name: "request_id",
@@ -31,7 +31,7 @@ func unpackPrimeTestsGetParams(packed middleware.Parameters) (params PrimeTestsG
 	return params
 }
 
-func decodePrimeTestsGetParams(args [1]string, argsEscaped bool, r *http.Request) (params PrimeTestsGetParams, _ error) {
+func decodePrimeChecksGetParams(args [1]string, argsEscaped bool, r *http.Request) (params PrimeChecksGetParams, _ error) {
 	// Decode path: request_id.
 	if err := func() error {
 		param := args[0]

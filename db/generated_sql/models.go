@@ -5,21 +5,30 @@
 package generated_sql
 
 import (
+	"encoding/json"
 	"time"
 )
 
-type Book struct {
-	ID          int32
-	Title       string
-	Author      string
-	PublishedAt time.Time
-	CreatedAt   time.Time
+type Outbox struct {
+	ID        int32
+	EventType string
+	Payload   json.RawMessage
+	Processed bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
-type Chapter struct {
+type PrimeRequest struct {
+	ID         int32
+	UserID     int32
+	NumberText string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
+type User struct {
 	ID        int32
-	BookID    int32
-	Number    int32
-	Content   string
+	AuthToken string
 	CreatedAt time.Time
+	UpdatedAt time.Time
 }

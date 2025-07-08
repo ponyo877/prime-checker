@@ -14,7 +14,7 @@ sequenceDiagram
     API->>API: トランザクション開始
     API->>DB: INSERT INTO prime_requests<br/>(number, status='pending')
     DB-->>API: request_id = 123
-    API->>DB: INSERT INTO outbox_events<br/>(event_type='PrimeRequestCreated',<br/>payload={request_id: 123, number: 1234567},<br/>status='pending')
+    API->>DB: INSERT INTO outbox_events<br/>(event_type='PrimeCheckCreated',<br/>payload={request_id: 123, number: 1234567},<br/>status='pending')
     API->>API: トランザクションコミット
     API-->>Client: 202 Accepted<br/>{request_id: 123}
 

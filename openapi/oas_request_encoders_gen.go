@@ -11,8 +11,8 @@ import (
 	ht "github.com/ogen-go/ogen/http"
 )
 
-func encodePrimeTestsCreateRequest(
-	req *PrimeTestRequest,
+func encodePrimeChecksCreateRequest(
+	req *PrimeCheckInput,
 	r *http.Request,
 ) error {
 	const contentType = "application/json"

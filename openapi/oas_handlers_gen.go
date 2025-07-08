@@ -30,20 +30,20 @@ func (c *codeRecorder) WriteHeader(status int) {
 	c.ResponseWriter.WriteHeader(status)
 }
 
-// handlePrimeTestsCreateRequest handles PrimeTests_create operation.
+// handlePrimeChecksCreateRequest handles PrimeChecks_create operation.
 //
-// POST /primality-tests
-func (s *Server) handlePrimeTestsCreateRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+// POST /prime-check
+func (s *Server) handlePrimeChecksCreateRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("PrimeTests_create"),
+		otelogen.OperationID("PrimeChecks_create"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/primality-tests"),
+		semconv.HTTPRouteKey.String("/prime-check"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), PrimeTestsCreateOperation,
+	ctx, span := s.cfg.Tracer.Start(r.Context(), PrimeChecksCreateOperation,
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -98,11 +98,11 @@ func (s *Server) handlePrimeTestsCreateRequest(args [0]string, argsEscaped bool,
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: PrimeTestsCreateOperation,
-			ID:   "PrimeTests_create",
+			Name: PrimeChecksCreateOperation,
+			ID:   "PrimeChecks_create",
 		}
 	)
-	request, close, err := s.decodePrimeTestsCreateRequest(r)
+	request, close, err := s.decodePrimeChecksCreateRequest(r)
 	if err != nil {
 		err = &ogenerrors.DecodeRequestError{
 			OperationContext: opErrContext,
@@ -118,22 +118,22 @@ func (s *Server) handlePrimeTestsCreateRequest(args [0]string, argsEscaped bool,
 		}
 	}()
 
-	var response *PrimeTest
+	var response *PrimeCheck
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    PrimeTestsCreateOperation,
+			OperationName:    PrimeChecksCreateOperation,
 			OperationSummary: "",
-			OperationID:      "PrimeTests_create",
+			OperationID:      "PrimeChecks_create",
 			Body:             request,
 			Params:           middleware.Parameters{},
 			Raw:              r,
 		}
 
 		type (
-			Request  = *PrimeTestRequest
+			Request  = *PrimeCheckInput
 			Params   = struct{}
-			Response = *PrimeTest
+			Response = *PrimeCheck
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -144,12 +144,12 @@ func (s *Server) handlePrimeTestsCreateRequest(args [0]string, argsEscaped bool,
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.PrimeTestsCreate(ctx, request)
+				response, err = s.h.PrimeChecksCreate(ctx, request)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.PrimeTestsCreate(ctx, request)
+		response, err = s.h.PrimeChecksCreate(ctx, request)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
@@ -168,7 +168,7 @@ func (s *Server) handlePrimeTestsCreateRequest(args [0]string, argsEscaped bool,
 		return
 	}
 
-	if err := encodePrimeTestsCreateResponse(response, w, span); err != nil {
+	if err := encodePrimeChecksCreateResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -177,20 +177,20 @@ func (s *Server) handlePrimeTestsCreateRequest(args [0]string, argsEscaped bool,
 	}
 }
 
-// handlePrimeTestsGetRequest handles PrimeTests_get operation.
+// handlePrimeChecksGetRequest handles PrimeChecks_get operation.
 //
-// GET /primality-tests/{request_id}
-func (s *Server) handlePrimeTestsGetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+// GET /prime-check/{request_id}
+func (s *Server) handlePrimeChecksGetRequest(args [1]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("PrimeTests_get"),
+		otelogen.OperationID("PrimeChecks_get"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/primality-tests/{request_id}"),
+		semconv.HTTPRouteKey.String("/prime-check/{request_id}"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), PrimeTestsGetOperation,
+	ctx, span := s.cfg.Tracer.Start(r.Context(), PrimeChecksGetOperation,
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -245,11 +245,11 @@ func (s *Server) handlePrimeTestsGetRequest(args [1]string, argsEscaped bool, w 
 		}
 		err          error
 		opErrContext = ogenerrors.OperationContext{
-			Name: PrimeTestsGetOperation,
-			ID:   "PrimeTests_get",
+			Name: PrimeChecksGetOperation,
+			ID:   "PrimeChecks_get",
 		}
 	)
-	params, err := decodePrimeTestsGetParams(args, argsEscaped, r)
+	params, err := decodePrimeChecksGetParams(args, argsEscaped, r)
 	if err != nil {
 		err = &ogenerrors.DecodeParamsError{
 			OperationContext: opErrContext,
@@ -260,13 +260,13 @@ func (s *Server) handlePrimeTestsGetRequest(args [1]string, argsEscaped bool, w 
 		return
 	}
 
-	var response *PrimeTest
+	var response *PrimeCheck
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    PrimeTestsGetOperation,
+			OperationName:    PrimeChecksGetOperation,
 			OperationSummary: "",
-			OperationID:      "PrimeTests_get",
+			OperationID:      "PrimeChecks_get",
 			Body:             nil,
 			Params: middleware.Parameters{
 				{
@@ -279,8 +279,8 @@ func (s *Server) handlePrimeTestsGetRequest(args [1]string, argsEscaped bool, w 
 
 		type (
 			Request  = struct{}
-			Params   = PrimeTestsGetParams
-			Response = *PrimeTest
+			Params   = PrimeChecksGetParams
+			Response = *PrimeCheck
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -289,14 +289,14 @@ func (s *Server) handlePrimeTestsGetRequest(args [1]string, argsEscaped bool, w 
 		](
 			m,
 			mreq,
-			unpackPrimeTestsGetParams,
+			unpackPrimeChecksGetParams,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.PrimeTestsGet(ctx, params)
+				response, err = s.h.PrimeChecksGet(ctx, params)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.PrimeTestsGet(ctx, params)
+		response, err = s.h.PrimeChecksGet(ctx, params)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
@@ -315,7 +315,7 @@ func (s *Server) handlePrimeTestsGetRequest(args [1]string, argsEscaped bool, w 
 		return
 	}
 
-	if err := encodePrimeTestsGetResponse(response, w, span); err != nil {
+	if err := encodePrimeChecksGetResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)
@@ -324,20 +324,20 @@ func (s *Server) handlePrimeTestsGetRequest(args [1]string, argsEscaped bool, w 
 	}
 }
 
-// handlePrimeTestsListRequest handles PrimeTests_list operation.
+// handlePrimeChecksListRequest handles PrimeChecks_list operation.
 //
-// GET /primality-tests
-func (s *Server) handlePrimeTestsListRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
+// GET /prime-check
+func (s *Server) handlePrimeChecksListRequest(args [0]string, argsEscaped bool, w http.ResponseWriter, r *http.Request) {
 	statusWriter := &codeRecorder{ResponseWriter: w}
 	w = statusWriter
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("PrimeTests_list"),
+		otelogen.OperationID("PrimeChecks_list"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/primality-tests"),
+		semconv.HTTPRouteKey.String("/prime-check"),
 	}
 
 	// Start a span for this request.
-	ctx, span := s.cfg.Tracer.Start(r.Context(), PrimeTestsListOperation,
+	ctx, span := s.cfg.Tracer.Start(r.Context(), PrimeChecksListOperation,
 		trace.WithAttributes(otelAttrs...),
 		serverSpanKind,
 	)
@@ -393,13 +393,13 @@ func (s *Server) handlePrimeTestsListRequest(args [0]string, argsEscaped bool, w
 		err error
 	)
 
-	var response *PrimeTestList
+	var response *PrimeCheckList
 	if m := s.cfg.Middleware; m != nil {
 		mreq := middleware.Request{
 			Context:          ctx,
-			OperationName:    PrimeTestsListOperation,
+			OperationName:    PrimeChecksListOperation,
 			OperationSummary: "",
-			OperationID:      "PrimeTests_list",
+			OperationID:      "PrimeChecks_list",
 			Body:             nil,
 			Params:           middleware.Parameters{},
 			Raw:              r,
@@ -408,7 +408,7 @@ func (s *Server) handlePrimeTestsListRequest(args [0]string, argsEscaped bool, w
 		type (
 			Request  = struct{}
 			Params   = struct{}
-			Response = *PrimeTestList
+			Response = *PrimeCheckList
 		)
 		response, err = middleware.HookMiddleware[
 			Request,
@@ -419,12 +419,12 @@ func (s *Server) handlePrimeTestsListRequest(args [0]string, argsEscaped bool, w
 			mreq,
 			nil,
 			func(ctx context.Context, request Request, params Params) (response Response, err error) {
-				response, err = s.h.PrimeTestsList(ctx)
+				response, err = s.h.PrimeChecksList(ctx)
 				return response, err
 			},
 		)
 	} else {
-		response, err = s.h.PrimeTestsList(ctx)
+		response, err = s.h.PrimeChecksList(ctx)
 	}
 	if err != nil {
 		if errRes, ok := errors.Into[*ErrorStatusCode](err); ok {
@@ -443,7 +443,7 @@ func (s *Server) handlePrimeTestsListRequest(args [0]string, argsEscaped bool, w
 		return
 	}
 
-	if err := encodePrimeTestsListResponse(response, w, span); err != nil {
+	if err := encodePrimeChecksListResponse(response, w, span); err != nil {
 		defer recordError("EncodeResponse", err)
 		if !errors.Is(err, ht.ErrInternalServerErrorResponse) {
 			s.cfg.ErrorHandler(ctx, w, r, err)

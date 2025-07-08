@@ -14,8 +14,8 @@ import (
 	"github.com/ogen-go/ogen/validate"
 )
 
-func (s *Server) decodePrimeTestsCreateRequest(r *http.Request) (
-	req *PrimeTestRequest,
+func (s *Server) decodePrimeChecksCreateRequest(r *http.Request) (
+	req *PrimeCheckInput,
 	close func() error,
 	rerr error,
 ) {
@@ -54,7 +54,7 @@ func (s *Server) decodePrimeTestsCreateRequest(r *http.Request) (
 
 		d := jx.DecodeBytes(buf)
 
-		var request PrimeTestRequest
+		var request PrimeCheckInput
 		if err := func() error {
 			if err := request.Decode(d); err != nil {
 				return err

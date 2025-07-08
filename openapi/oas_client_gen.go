@@ -28,18 +28,18 @@ func trimTrailingSlashes(u *url.URL) {
 
 // Invoker invokes operations described by OpenAPI v3 specification.
 type Invoker interface {
-	// PrimeTestsCreate invokes PrimeTests_create operation.
+	// PrimeChecksCreate invokes PrimeChecks_create operation.
 	//
-	// POST /primality-tests
-	PrimeTestsCreate(ctx context.Context, request *PrimeTestRequest) (*PrimeTest, error)
-	// PrimeTestsGet invokes PrimeTests_get operation.
+	// POST /prime-check
+	PrimeChecksCreate(ctx context.Context, request *PrimeCheckInput) (*PrimeCheck, error)
+	// PrimeChecksGet invokes PrimeChecks_get operation.
 	//
-	// GET /primality-tests/{request_id}
-	PrimeTestsGet(ctx context.Context, params PrimeTestsGetParams) (*PrimeTest, error)
-	// PrimeTestsList invokes PrimeTests_list operation.
+	// GET /prime-check/{request_id}
+	PrimeChecksGet(ctx context.Context, params PrimeChecksGetParams) (*PrimeCheck, error)
+	// PrimeChecksList invokes PrimeChecks_list operation.
 	//
-	// GET /primality-tests
-	PrimeTestsList(ctx context.Context) (*PrimeTestList, error)
+	// GET /prime-check
+	PrimeChecksList(ctx context.Context) (*PrimeCheckList, error)
 	// SettingsCreate invokes Settings_create operation.
 	//
 	// POST /settings
@@ -97,19 +97,19 @@ func (c *Client) requestURL(ctx context.Context) *url.URL {
 	return u
 }
 
-// PrimeTestsCreate invokes PrimeTests_create operation.
+// PrimeChecksCreate invokes PrimeChecks_create operation.
 //
-// POST /primality-tests
-func (c *Client) PrimeTestsCreate(ctx context.Context, request *PrimeTestRequest) (*PrimeTest, error) {
-	res, err := c.sendPrimeTestsCreate(ctx, request)
+// POST /prime-check
+func (c *Client) PrimeChecksCreate(ctx context.Context, request *PrimeCheckInput) (*PrimeCheck, error) {
+	res, err := c.sendPrimeChecksCreate(ctx, request)
 	return res, err
 }
 
-func (c *Client) sendPrimeTestsCreate(ctx context.Context, request *PrimeTestRequest) (res *PrimeTest, err error) {
+func (c *Client) sendPrimeChecksCreate(ctx context.Context, request *PrimeCheckInput) (res *PrimeCheck, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("PrimeTests_create"),
+		otelogen.OperationID("PrimeChecks_create"),
 		semconv.HTTPRequestMethodKey.String("POST"),
-		semconv.HTTPRouteKey.String("/primality-tests"),
+		semconv.HTTPRouteKey.String("/prime-check"),
 	}
 
 	// Run stopwatch.
@@ -124,7 +124,7 @@ func (c *Client) sendPrimeTestsCreate(ctx context.Context, request *PrimeTestReq
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, PrimeTestsCreateOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, PrimeChecksCreateOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -142,7 +142,7 @@ func (c *Client) sendPrimeTestsCreate(ctx context.Context, request *PrimeTestReq
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/primality-tests"
+	pathParts[0] = "/prime-check"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -150,7 +150,7 @@ func (c *Client) sendPrimeTestsCreate(ctx context.Context, request *PrimeTestReq
 	if err != nil {
 		return res, errors.Wrap(err, "create request")
 	}
-	if err := encodePrimeTestsCreateRequest(request, r); err != nil {
+	if err := encodePrimeChecksCreateRequest(request, r); err != nil {
 		return res, errors.Wrap(err, "encode request")
 	}
 
@@ -162,7 +162,7 @@ func (c *Client) sendPrimeTestsCreate(ctx context.Context, request *PrimeTestReq
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodePrimeTestsCreateResponse(resp)
+	result, err := decodePrimeChecksCreateResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -170,19 +170,19 @@ func (c *Client) sendPrimeTestsCreate(ctx context.Context, request *PrimeTestReq
 	return result, nil
 }
 
-// PrimeTestsGet invokes PrimeTests_get operation.
+// PrimeChecksGet invokes PrimeChecks_get operation.
 //
-// GET /primality-tests/{request_id}
-func (c *Client) PrimeTestsGet(ctx context.Context, params PrimeTestsGetParams) (*PrimeTest, error) {
-	res, err := c.sendPrimeTestsGet(ctx, params)
+// GET /prime-check/{request_id}
+func (c *Client) PrimeChecksGet(ctx context.Context, params PrimeChecksGetParams) (*PrimeCheck, error) {
+	res, err := c.sendPrimeChecksGet(ctx, params)
 	return res, err
 }
 
-func (c *Client) sendPrimeTestsGet(ctx context.Context, params PrimeTestsGetParams) (res *PrimeTest, err error) {
+func (c *Client) sendPrimeChecksGet(ctx context.Context, params PrimeChecksGetParams) (res *PrimeCheck, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("PrimeTests_get"),
+		otelogen.OperationID("PrimeChecks_get"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/primality-tests/{request_id}"),
+		semconv.HTTPRouteKey.String("/prime-check/{request_id}"),
 	}
 
 	// Run stopwatch.
@@ -197,7 +197,7 @@ func (c *Client) sendPrimeTestsGet(ctx context.Context, params PrimeTestsGetPara
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, PrimeTestsGetOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, PrimeChecksGetOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -215,7 +215,7 @@ func (c *Client) sendPrimeTestsGet(ctx context.Context, params PrimeTestsGetPara
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [2]string
-	pathParts[0] = "/primality-tests/"
+	pathParts[0] = "/prime-check/"
 	{
 		// Encode "request_id" parameter.
 		e := uri.NewPathEncoder(uri.PathEncoderConfig{
@@ -250,7 +250,7 @@ func (c *Client) sendPrimeTestsGet(ctx context.Context, params PrimeTestsGetPara
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodePrimeTestsGetResponse(resp)
+	result, err := decodePrimeChecksGetResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}
@@ -258,19 +258,19 @@ func (c *Client) sendPrimeTestsGet(ctx context.Context, params PrimeTestsGetPara
 	return result, nil
 }
 
-// PrimeTestsList invokes PrimeTests_list operation.
+// PrimeChecksList invokes PrimeChecks_list operation.
 //
-// GET /primality-tests
-func (c *Client) PrimeTestsList(ctx context.Context) (*PrimeTestList, error) {
-	res, err := c.sendPrimeTestsList(ctx)
+// GET /prime-check
+func (c *Client) PrimeChecksList(ctx context.Context) (*PrimeCheckList, error) {
+	res, err := c.sendPrimeChecksList(ctx)
 	return res, err
 }
 
-func (c *Client) sendPrimeTestsList(ctx context.Context) (res *PrimeTestList, err error) {
+func (c *Client) sendPrimeChecksList(ctx context.Context) (res *PrimeCheckList, err error) {
 	otelAttrs := []attribute.KeyValue{
-		otelogen.OperationID("PrimeTests_list"),
+		otelogen.OperationID("PrimeChecks_list"),
 		semconv.HTTPRequestMethodKey.String("GET"),
-		semconv.HTTPRouteKey.String("/primality-tests"),
+		semconv.HTTPRouteKey.String("/prime-check"),
 	}
 
 	// Run stopwatch.
@@ -285,7 +285,7 @@ func (c *Client) sendPrimeTestsList(ctx context.Context) (res *PrimeTestList, er
 	c.requests.Add(ctx, 1, metric.WithAttributes(otelAttrs...))
 
 	// Start a span for this request.
-	ctx, span := c.cfg.Tracer.Start(ctx, PrimeTestsListOperation,
+	ctx, span := c.cfg.Tracer.Start(ctx, PrimeChecksListOperation,
 		trace.WithAttributes(otelAttrs...),
 		clientSpanKind,
 	)
@@ -303,7 +303,7 @@ func (c *Client) sendPrimeTestsList(ctx context.Context) (res *PrimeTestList, er
 	stage = "BuildURL"
 	u := uri.Clone(c.requestURL(ctx))
 	var pathParts [1]string
-	pathParts[0] = "/primality-tests"
+	pathParts[0] = "/prime-check"
 	uri.AddPathParts(u, pathParts[:]...)
 
 	stage = "EncodeRequest"
@@ -320,7 +320,7 @@ func (c *Client) sendPrimeTestsList(ctx context.Context) (res *PrimeTestList, er
 	defer resp.Body.Close()
 
 	stage = "DecodeResponse"
-	result, err := decodePrimeTestsListResponse(resp)
+	result, err := decodePrimeChecksListResponse(resp)
 	if err != nil {
 		return res, errors.Wrap(err, "decode response")
 	}

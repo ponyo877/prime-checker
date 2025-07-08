@@ -6,9 +6,9 @@ package openapi
 type OperationName = string
 
 const (
-	PrimeTestsCreateOperation OperationName = "PrimeTestsCreate"
-	PrimeTestsGetOperation    OperationName = "PrimeTestsGet"
-	PrimeTestsListOperation   OperationName = "PrimeTestsList"
-	SettingsCreateOperation   OperationName = "SettingsCreate"
-	SettingsGetOperation      OperationName = "SettingsGet"
+	PrimeChecksCreateOperation OperationName = "PrimeChecksCreate"
+	PrimeChecksGetOperation    OperationName = "PrimeChecksGet"
+	PrimeChecksListOperation   OperationName = "PrimeChecksList"
+	SettingsCreateOperation    OperationName = "SettingsCreate"
+	SettingsGetOperation       OperationName = "SettingsGet"
 )

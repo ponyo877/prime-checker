@@ -15,6 +15,8 @@ import (
 	"github.com/ponyo877/product-expiry-tracker/usecase"
 )
 
+//go:generate go run github.com/ogen-go/ogen/cmd/ogen@latest --target ./openapi -package openapi --clean typespec/tsp-output/@typespec/openapi3/openapi.yaml
+
 func main() {
 	// Build DSN from individual environment variables
 	user := os.Getenv("MYSQL_USER")
