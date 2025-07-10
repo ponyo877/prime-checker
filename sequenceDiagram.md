@@ -40,11 +40,11 @@ sequenceDiagram
     Note over Worker1,MQ: 4. 結果イベント発行
     Worker1->>DB: SELECT * FROM outbox_events<br/>WHERE status='pending'
     DB-->>Worker1: 新しいイベント
-    Worker1->>MQ: Publish to 'prime.check.completed'<br/>{request_id: 123, is_prime: true}
+    Worker1->>MQ: Publish to 'primecheck.completed'<br/>{request_id: 123, is_prime: true}
     Worker1->>DB: UPDATE outbox_events<br/>SET status='published'
 
     Note over Worker3,Mail: 5. メール送信フェーズ
-    MQ->>Worker3: Consume 'prime.check.completed'
+    MQ->>Worker3: Consume 'primecheck.completed'
     Worker3->>DB: SELECT * FROM prime_requests<br/>WHERE id = 123
     DB-->>Worker3: リクエスト詳細
     Worker3->>Worker3: メッセージID生成<br/>(冪等性キー)

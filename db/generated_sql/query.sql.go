@@ -8,7 +8,22 @@ package generated_sql
 import (
 	"context"
 	"database/sql"
+	"encoding/json"
 )
+
+const createOutboxMessage = `-- name: CreateOutboxMessage :execresult
+INSERT INTO outbox (event_type, payload)
+VALUES (?, ?)
+`
+
+type CreateOutboxMessageParams struct {
+	EventType string
+	Payload   json.RawMessage
+}
+
+func (q *Queries) CreateOutboxMessage(ctx context.Context, arg CreateOutboxMessageParams) (sql.Result, error) {
+	return q.db.ExecContext(ctx, createOutboxMessage, arg.EventType, arg.Payload)
+}
 
 const createPrimeCheck = `-- name: CreatePrimeCheck :execresult
 INSERT INTO prime_requests (user_id, number_text)
@@ -41,6 +56,43 @@ func (q *Queries) GetPrimeCheck(ctx context.Context, id int32) (PrimeRequest, er
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const getUnprocessedOutboxMessages = `-- name: GetUnprocessedOutboxMessages :many
+SELECT id, event_type, payload, processed, created_at, updated_at
+FROM outbox
+WHERE processed = FALSE
+ORDER BY created_at ASC
+`
+
+func (q *Queries) GetUnprocessedOutboxMessages(ctx context.Context) ([]Outbox, error) {
+	rows, err := q.db.QueryContext(ctx, getUnprocessedOutboxMessages)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Outbox
+	for rows.Next() {
+		var i Outbox
+		if err := rows.Scan(
+			&i.ID,
+			&i.EventType,
+			&i.Payload,
+			&i.Processed,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const listPrimeChecks = `-- name: ListPrimeChecks :many
@@ -76,4 +128,15 @@ func (q *Queries) ListPrimeChecks(ctx context.Context) ([]PrimeRequest, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const markOutboxMessageProcessed = `-- name: MarkOutboxMessageProcessed :exec
+UPDATE outbox
+SET processed = TRUE, updated_at = CURRENT_TIMESTAMP
+WHERE id = ?
+`
+
+func (q *Queries) MarkOutboxMessageProcessed(ctx context.Context, id int32) error {
+	_, err := q.db.ExecContext(ctx, markOutboxMessageProcessed, id)
+	return err
 }

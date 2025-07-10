@@ -133,6 +133,16 @@ tasks:
     cmds:
       - docker compose exec -T mysql mysql -u${MYSQL_USER:-roudoku} -p${MYSQL_PASSWORD:-roudoku_password} ${MYSQL_DATABASE:-roudoku} --default-character-set=utf8mb4 < server/db/init/seed.sql
 
+  msg:up:
+    desc: "Start NATS server with docker-compose"
+    cmds:
+      - docker compose up -d nats
+  
+  mail:up:
+    desc: "Start Mailpit server with docker-compose"
+    cmds:
+      - docker compose up -d mailpit
+
   # fmt:
   #   desc: "Format Go code with goimports"
   #   cmds:

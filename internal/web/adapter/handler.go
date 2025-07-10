@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/ponyo877/product-expiry-tracker/internal/web/usecase"
 	"github.com/ponyo877/product-expiry-tracker/openapi"
-	"github.com/ponyo877/product-expiry-tracker/usecase"
 )
 
 type handler struct {
@@ -20,7 +20,7 @@ func (h *handler) PrimeChecksCreate(ctx context.Context, req *openapi.PrimeCheck
 	// TODO: Replace with actual user ID retrieval logic
 	userID := int32(1)
 
-	test, err := h.usecase.CreatePrimeCheck(ctx, userID, req.Number)
+	test, err := h.usecase.CreatePrimeCheckWithMessage(ctx, userID, req.Number)
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,12 @@
+POST http://localhost:8080/prime-check
+Content-Type: application/json
+
+{
+    "number": "20988936657440586486151264256610222593863921"
+}
+
+###
+GET http://localhost:8080/prime-check/1
+
+###
+GET http://localhost:8080/prime-check
