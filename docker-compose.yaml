@@ -4,9 +4,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-prime_request}
-      MYSQL_USER: ${MYSQL_USER:-prime_request}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-prime_request_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-prime_check}
+      MYSQL_USER: ${MYSQL_USER:-prime_check}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-prime_check_password}
     ports:
       - "3306:3306"
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci

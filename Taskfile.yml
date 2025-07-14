@@ -61,7 +61,7 @@ tasks:
   ogen:
     deps: ['tsp']
     cmds:
-      - go generate ./main.go
+      - go generate ./cmd/web-server/main.go
     sources:
       - typespec/tsp-output/@typespec/openapi3/openapi.yaml
       - ./main.go

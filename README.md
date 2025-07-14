@@ -145,7 +145,7 @@ go run cmd/email-send-worker/main.go
 
 ### Tables
 - `users` - User information with auth tokens
-- `prime_requests` - Prime check requests
+- `prime_checks` - Prime check requests
 - `outbox` - Outbox pattern messages for reliable delivery
 
 ## Development

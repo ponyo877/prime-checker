@@ -1,28 +1,47 @@
 -- name: CreatePrimeCheck :execresult
-INSERT INTO prime_requests (user_id, number_text)
-VALUES (?, ?);
+INSERT INTO prime_checks (user_id, number_text) VALUES (?, ?);
 
 -- name: GetPrimeCheck :one
-SELECT id, user_id, number_text, created_at, updated_at
-FROM prime_requests
-WHERE id = ?;
+SELECT
+    id,
+    user_id,
+    number_text,
+    created_at,
+    updated_at
+FROM prime_checks
+WHERE
+    id = ?;
 
 -- name: ListPrimeChecks :many
-SELECT id, user_id, number_text, created_at, updated_at
-FROM prime_requests
+SELECT
+    id,
+    user_id,
+    number_text,
+    created_at,
+    updated_at
+FROM prime_checks
 ORDER BY created_at DESC;
 
 -- name: CreateOutboxMessage :execresult
-INSERT INTO outbox (event_type, payload)
-VALUES (?, ?);
+INSERT INTO outbox (event_type, payload) VALUES (?, ?);
 
 -- name: GetUnprocessedOutboxMessages :many
-SELECT id, event_type, payload, processed, created_at, updated_at
+SELECT
+    id,
+    event_type,
+    payload,
+    processed,
+    created_at,
+    updated_at
 FROM outbox
-WHERE processed = FALSE
+WHERE
+    processed = FALSE
 ORDER BY created_at ASC;
 
 -- name: MarkOutboxMessageProcessed :exec
 UPDATE outbox
-SET processed = TRUE, updated_at = CURRENT_TIMESTAMP
-WHERE id = ?;
+SET
+    processed = TRUE,
+    updated_at = CURRENT_TIMESTAMP
+WHERE
+    id = ?;

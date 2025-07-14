@@ -18,7 +18,7 @@ type Outbox struct {
 	UpdatedAt time.Time
 }
 
-type PrimeRequest struct {
+type PrimeCheck struct {
 	ID         int32
 	UserID     int32
 	NumberText string

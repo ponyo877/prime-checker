@@ -12,8 +12,7 @@ import (
 )
 
 const createOutboxMessage = `-- name: CreateOutboxMessage :execresult
-INSERT INTO outbox (event_type, payload)
-VALUES (?, ?)
+INSERT INTO outbox (event_type, payload) VALUES (?, ?)
 `
 
 type CreateOutboxMessageParams struct {
@@ -26,8 +25,7 @@ func (q *Queries) CreateOutboxMessage(ctx context.Context, arg CreateOutboxMessa
 }
 
 const createPrimeCheck = `-- name: CreatePrimeCheck :execresult
-INSERT INTO prime_requests (user_id, number_text)
-VALUES (?, ?)
+INSERT INTO prime_checks (user_id, number_text) VALUES (?, ?)
 `
 
 type CreatePrimeCheckParams struct {
@@ -40,14 +38,20 @@ func (q *Queries) CreatePrimeCheck(ctx context.Context, arg CreatePrimeCheckPara
 }
 
 const getPrimeCheck = `-- name: GetPrimeCheck :one
-SELECT id, user_id, number_text, created_at, updated_at
-FROM prime_requests
-WHERE id = ?
+SELECT
+    id,
+    user_id,
+    number_text,
+    created_at,
+    updated_at
+FROM prime_checks
+WHERE
+    id = ?
 `
 
-func (q *Queries) GetPrimeCheck(ctx context.Context, id int32) (PrimeRequest, error) {
+func (q *Queries) GetPrimeCheck(ctx context.Context, id int32) (PrimeCheck, error) {
 	row := q.db.QueryRowContext(ctx, getPrimeCheck, id)
-	var i PrimeRequest
+	var i PrimeCheck
 	err := row.Scan(
 		&i.ID,
 		&i.UserID,
@@ -59,9 +63,16 @@ func (q *Queries) GetPrimeCheck(ctx context.Context, id int32) (PrimeRequest, er
 }
 
 const getUnprocessedOutboxMessages = `-- name: GetUnprocessedOutboxMessages :many
-SELECT id, event_type, payload, processed, created_at, updated_at
+SELECT
+    id,
+    event_type,
+    payload,
+    processed,
+    created_at,
+    updated_at
 FROM outbox
-WHERE processed = FALSE
+WHERE
+    processed = FALSE
 ORDER BY created_at ASC
 `
 
@@ -96,20 +107,25 @@ func (q *Queries) GetUnprocessedOutboxMessages(ctx context.Context) ([]Outbox, e
 }
 
 const listPrimeChecks = `-- name: ListPrimeChecks :many
-SELECT id, user_id, number_text, created_at, updated_at
-FROM prime_requests
+SELECT
+    id,
+    user_id,
+    number_text,
+    created_at,
+    updated_at
+FROM prime_checks
 ORDER BY created_at DESC
 `
 
-func (q *Queries) ListPrimeChecks(ctx context.Context) ([]PrimeRequest, error) {
+func (q *Queries) ListPrimeChecks(ctx context.Context) ([]PrimeCheck, error) {
 	rows, err := q.db.QueryContext(ctx, listPrimeChecks)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []PrimeRequest
+	var items []PrimeCheck
 	for rows.Next() {
-		var i PrimeRequest
+		var i PrimeCheck
 		if err := rows.Scan(
 			&i.ID,
 			&i.UserID,
@@ -132,8 +148,11 @@ func (q *Queries) ListPrimeChecks(ctx context.Context) ([]PrimeRequest, error) {
 
 const markOutboxMessageProcessed = `-- name: MarkOutboxMessageProcessed :exec
 UPDATE outbox
-SET processed = TRUE, updated_at = CURRENT_TIMESTAMP
-WHERE id = ?
+SET
+    processed = TRUE,
+    updated_at = CURRENT_TIMESTAMP
+WHERE
+    id = ?
 `
 
 func (q *Queries) MarkOutboxMessageProcessed(ctx context.Context, id int32) error {

@@ -12,7 +12,7 @@ sequenceDiagram
     Note over API,DB: 1. リクエスト受付フェーズ
     Client->>API: POST /prime-check<br/>{number: 1234567}
     API->>API: トランザクション開始
-    API->>DB: INSERT INTO prime_requests<br/>(number, status='pending')
+    API->>DB: INSERT INTO prime_checks<br/>(number, status='pending')
     DB-->>API: request_id = 123
     API->>DB: INSERT INTO outbox_events<br/>(event_type='PrimeCheckCreated',<br/>payload={request_id: 123, number: 1234567},<br/>status='pending')
     API->>API: トランザクションコミット
@@ -29,10 +29,10 @@ sequenceDiagram
 
     Note over Worker2,DB: 3. 素数判定フェーズ
     MQ->>Worker2: Consume 'prime.request.created'
-    Worker2->>DB: UPDATE prime_requests<br/>SET status='processing'<br/>WHERE id = 123
+    Worker2->>DB: UPDATE prime_checks<br/>SET status='processing'<br/>WHERE id = 123
     Worker2->>Worker2: 素数判定実行<br/>(ミラー・ラビン判定法)
     Worker2->>DB: トランザクション開始
-    Worker2->>DB: UPDATE prime_requests<br/>SET status='completed', result=true<br/>WHERE id = 123
+    Worker2->>DB: UPDATE prime_checks<br/>SET status='completed', result=true<br/>WHERE id = 123
     Worker2->>DB: INSERT INTO outbox_events<br/>(event_type='PrimeCheckCompleted',<br/>payload={request_id: 123, is_prime: true},<br/>status='pending')
     Worker2->>DB: トランザクションコミット
     Worker2->>MQ: ACK (メッセージ消費完了)
@@ -45,7 +45,7 @@ sequenceDiagram
 
     Note over Worker3,Mail: 5. メール送信フェーズ
     MQ->>Worker3: Consume 'primecheck.completed'
-    Worker3->>DB: SELECT * FROM prime_requests<br/>WHERE id = 123
+    Worker3->>DB: SELECT * FROM prime_checks<br/>WHERE id = 123
     DB-->>Worker3: リクエスト詳細
     Worker3->>Worker3: メッセージID生成<br/>(冪等性キー)
     Worker3->>DB: SELECT * FROM email_logs<br/>WHERE message_id = ?
@@ -57,7 +57,7 @@ sequenceDiagram
 
     Note over Client,API: 6. 結果確認
     Client->>API: GET /prime-check/123
-    API->>DB: SELECT * FROM prime_requests<br/>WHERE id = 123
+    API->>DB: SELECT * FROM prime_checks<br/>WHERE id = 123
     DB-->>API: {status: 'completed', result: true}
     API-->>Client: 200 OK<br/>{number: 1234567, is_prime: true}
 ```

@@ -20,7 +20,7 @@ model PrimeCheckList {
 
 model Setting {
   record_number_success: boolean;
-  prime_request_success: boolean;
+  prime_check_success: boolean;
   email_send_success: boolean;
   dlq_save_success: boolean;
 }
