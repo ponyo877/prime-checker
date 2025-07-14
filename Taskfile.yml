@@ -46,10 +46,6 @@ tasks:
       - ./db/generated/public.sql.go
     desc: "Generate SQLC code"
 
-  # sqlc:
-  #   deps: [sqlc-admin, sqlc-public]
-  #   desc: "Run SQLC generation for both admin and public databases"
-
   # dev:
   #   deps: [sqlc, frontend, frontend-build, ogen, openapi-client]
   #   desc: "Run both SQLC generation and Node.js dev server"
@@ -102,36 +98,31 @@ tasks:
   #   cmds:
   #     - docker run --rm -it --env-file .env -p 8080:8080 blog4
 
-  db:up:
-    desc: "Start MySQL database with docker-compose"
+  all:up:
+    desc: "Start all services with docker-compose"
     cmds:
-      - docker compose up -d mysql
+      - docker compose up -d
   
-  db:down:
-    desc: "Stop MySQL database"
+  all:down:
+    desc: "Stop all services database"
     cmds:
       - docker compose down
   
-  db:logs:
-    desc: "Show MySQL logs"
+  all:reset:
+    desc: "Reset all services (destroy and recreate)"
     cmds:
-      - docker compose logs -f mysql
+      - docker compose down -v
+      - docker compose up -d
   
   db:shell:
     desc: "Open MySQL shell"
     cmds:
-      - docker compose exec mysql mysql -u${MYSQL_USER:-roudoku} -p${MYSQL_PASSWORD:-roudoku_password} ${MYSQL_DATABASE:-roudoku} --default-character-set=utf8mb4
-  
-  db:reset:
-    desc: "Reset database (destroy and recreate)"
-    cmds:
-      - docker compose down -v
-      - docker compose up -d mysql
+      - docker compose exec mysql mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} --default-character-set=utf8mb4
   
   db:seed:
     desc: "Load seed data into database"
     cmds:
-      - docker compose exec -T mysql mysql -u${MYSQL_USER:-roudoku} -p${MYSQL_PASSWORD:-roudoku_password} ${MYSQL_DATABASE:-roudoku} --default-character-set=utf8mb4 < server/db/init/seed.sql
+      - docker compose exec -T mysql mysql -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${MYSQL_DATABASE} --default-character-set=utf8mb4 < db/init/seed.sql
 
   msg:up:
     desc: "Start NATS server with docker-compose"
@@ -143,19 +134,19 @@ tasks:
     cmds:
       - docker compose up -d mailpit
 
-  # fmt:
-  #   desc: "Format Go code with goimports"
-  #   cmds:
-  #     - go fmt ./...
-  #     - goimports -w -local github.com/tokuhirom/blog4 .
-  #   sources:
-  #     - '**/*.go'
+  fmt:
+    desc: "Format Go code with goimports"
+    cmds:
+      - go fmt ./...
+      - goimports -w -local github.com/ponyo877/product-expiry-tracker .
+    sources:
+      - '**/*.go'
 
-  # lint:
-  #   desc: "Run linters"
-  #   cmds:
-  #     - goimports -d -local github.com/tokuhirom/blog4 .
-  #     - go vet ./...
+  lint:
+    desc: "Run linters"
+    cmds:
+      - goimports -d -local github.com/ponyo877/product-expiry-tracker .
+      - go vet ./...
 
   # biome-format:
   #   desc: "Format frontend code with Biome"
