@@ -13,10 +13,10 @@ const (
 )
 
 type Message struct {
-	ID        string      `json:"id"`
-	Type      MessageType `json:"type"`
+	ID        string          `json:"id"`
+	Type      MessageType     `json:"type"`
 	Payload   json.RawMessage `json:"payload"`
-	CreatedAt time.Time   `json:"created_at"`
+	CreatedAt time.Time       `json:"created_at"`
 }
 
 type PrimeCheckPayload struct {

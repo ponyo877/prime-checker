@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-sql-driver/mysql"
+
 	"github.com/ponyo877/product-expiry-tracker/db/generated_sql"
 )
 

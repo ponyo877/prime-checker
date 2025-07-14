@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/nats-io/nats.go"
+
 	"github.com/ponyo877/product-expiry-tracker/internal/shared/message"
 )
 
@@ -127,7 +128,7 @@ func (n *NATSBroker) processMessage(ctx context.Context, natsMsg *nats.Msg, hand
 
 	// Set message ID from NATS metadata if available
 	if meta, err := natsMsg.Metadata(); err == nil {
-		msg.ID = fmt.Sprintf("%d-%d", meta.Stream, meta.Sequence)
+		msg.ID = fmt.Sprintf("%s-%d", meta.Stream, meta.Sequence)
 	}
 
 	return handler(ctx, &msg)
