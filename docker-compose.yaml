@@ -4,9 +4,9 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-password}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-prime_check}
-      MYSQL_USER: ${MYSQL_USER:-prime_check}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-prime_check_password}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "3306:3306"
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
@@ -47,15 +47,15 @@ services:
 
   web-server:
     build:
-      context: ..
-      dockerfile: docker/web-server.Dockerfile
+      context: docker/local
+      dockerfile: web-server.local.Dockerfile
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
-      MYSQL_DATABASE: product_expiry_tracker
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: app_password
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     ports:
       - "8080:8080"
     depends_on:
@@ -64,15 +64,15 @@ services:
 
   outbox-publisher:
     build:
-      context: ..
-      dockerfile: docker/outbox-publisher.Dockerfile
+      context: docker/local
+      dockerfile: outbox-publisher.local.Dockerfile
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
-      MYSQL_DATABASE: product_expiry_tracker
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: app_password
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       NATS_URL: nats://nats:4222
     depends_on:
       mysql:
@@ -82,15 +82,15 @@ services:
 
   prime-check-worker:
     build:
-      context: ..
-      dockerfile: docker/prime-check-worker.Dockerfile
+      context: docker/local
+      dockerfile: prime-check-worker.local.Dockerfile
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
-      MYSQL_DATABASE: product_expiry_tracker
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: app_password
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       NATS_URL: nats://nats:4222
     depends_on:
       mysql:
@@ -100,15 +100,15 @@ services:
 
   email-send-worker:
     build:
-      context: ..
-      dockerfile: docker/email-send-worker.Dockerfile
+      context: docker/local
+      dockerfile: email-send-worker.local.Dockerfile
     restart: unless-stopped
     environment:
       NATS_URL: nats://nats:4222
-      SMTP_HOST: mailpit
-      SMTP_PORT: 1025
-      SMTP_USERNAME: test@example.com
-      SMTP_PASSWORD: password
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT}
+      SMTP_USERNAME: ${SMTP_USERNAME}
+      SMTP_PASSWORD: ${SMTP}
     depends_on:
       nats:
         condition: service_healthy

@@ -19,10 +19,7 @@ type DatabaseConfig struct {
 }
 
 func NewDatabaseConnection(config DatabaseConfig) (*sql.DB, error) {
-	jst, err := time.LoadLocation("Asia/Tokyo")
-	if err != nil {
-		return nil, fmt.Errorf("failed to load timezone: %w", err)
-	}
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 
 	c := mysql.Config{
 		DBName:    config.Database,

@@ -8,8 +8,7 @@ import (
 	"syscall"
 
 	"github.com/ponyo877/product-expiry-tracker/internal/emailsend/adapter"
-	"github.com/ponyo877/product-expiry-tracker/internal/emailsend/email"
-	"github.com/ponyo877/product-expiry-tracker/internal/emailsend/service"
+	"github.com/ponyo877/product-expiry-tracker/internal/emailsend/repository"
 	"github.com/ponyo877/product-expiry-tracker/internal/emailsend/usecase"
 	"github.com/ponyo877/product-expiry-tracker/internal/shared/config"
 	"github.com/ponyo877/product-expiry-tracker/internal/shared/infrastructure"
@@ -27,9 +26,13 @@ func main() {
 	defer natsBroker.Close()
 
 	// Create dependencies (DI)
-	emailSender := email.NewSender()
-	smtpSender := service.NewSMTPSender(emailSender)
-	emailUsecase := usecase.NewEmailSendUsecase(smtpSender)
+	smtpHost := os.Getenv("SMTP_HOST")
+	smtpPort := os.Getenv("SMTP_PORT")
+	username := os.Getenv("SMTP_USERNAME")
+	password := os.Getenv("SMTP_PASSWORD")
+
+	emailRepo := repository.NewEmailRepository(smtpHost, smtpPort, username, password)
+	emailUsecase := usecase.NewEmailSendUsecase(emailRepo)
 	worker := adapter.NewEmailSendWorker(emailUsecase)
 
 	// Setup graceful shutdown

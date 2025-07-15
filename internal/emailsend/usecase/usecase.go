@@ -8,20 +8,28 @@ import (
 )
 
 type EmailSendUsecase struct {
-	sender EmailSender
+	repo EmailRepository
 }
 
-func NewEmailSendUsecase(sender EmailSender) *EmailSendUsecase {
+func NewEmailSendUsecase(repo EmailRepository) *EmailSendUsecase {
 	return &EmailSendUsecase{
-		sender: sender,
+		repo: repo,
 	}
 }
 
 func (u *EmailSendUsecase) SendPrimeCheckResult(request *model.EmailRequest) (*model.SendResult, error) {
 	log.Printf("Sending email to %s for request ID %d", request.Email(), request.RequestID())
 
-	err := u.sender.SendPrimeCheckResult(request.Email(), request.NumberText(), request.IsPrime())
-	if err != nil {
+	var subject, body string
+	if request.IsPrime() {
+		subject = fmt.Sprintf("Prime Check Result: %s is Prime!", request.NumberText())
+		body = fmt.Sprintf("Good news! The number %s is a prime number.", request.NumberText())
+	} else {
+		subject = fmt.Sprintf("Prime Check Result: %s is not Prime", request.NumberText())
+		body = fmt.Sprintf("The number %s is not a prime number.", request.NumberText())
+	}
+
+	if err := u.repo.SendEmail(request.Email(), subject, body); err != nil {
 		log.Printf("Failed to send email: %v", err)
 		return model.NewSendResult(request.RequestID(), model.SendStatusFailed, err), fmt.Errorf("failed to send email: %w", err)
 	}
