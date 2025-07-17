@@ -107,12 +107,17 @@ tasks:
     desc: "Stop all services database"
     cmds:
       - docker compose down
-  
+
   all:reset:
     desc: "Reset all services (destroy and recreate)"
     cmds:
       - docker compose down -v
-      - docker compose up -d
+      - docker compose up -d --build
+
+  all:log:
+    desc: "Show logs for all services"
+    cmds:
+      - docker compose logs -f --tail=100
   
   db:shell:
     desc: "Open MySQL shell"

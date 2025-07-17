@@ -12,11 +12,8 @@ RUN go mod download
 # Copy source code
 COPY . .
 
-# Create air config if not exists
-RUN if [ ! -f .air.toml ]; then air init; fi
-
 # Expose ports
 EXPOSE 8080
 EXPOSE 40003
 
-CMD ["air", "-c", ".air.toml", "--", "cmd/web-server"]
+CMD ["air", "-c", "./cmd/web-server/air.toml"]

@@ -47,8 +47,8 @@ services:
 
   web-server:
     build:
-      context: docker/local
-      dockerfile: web-server.local.Dockerfile
+      context: .
+      dockerfile: docker/local/web-server.local.Dockerfile
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
@@ -64,8 +64,8 @@ services:
 
   outbox-publisher:
     build:
-      context: docker/local
-      dockerfile: outbox-publisher.local.Dockerfile
+      context: .
+      dockerfile: docker/local/outbox-publisher.local.Dockerfile
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
@@ -82,8 +82,8 @@ services:
 
   prime-check-worker:
     build:
-      context: docker/local
-      dockerfile: prime-check-worker.local.Dockerfile
+      context: .
+      dockerfile: docker/local/prime-check-worker.local.Dockerfile
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
@@ -100,8 +100,8 @@ services:
 
   email-send-worker:
     build:
-      context: docker/local
-      dockerfile: email-send-worker.local.Dockerfile
+      context: .
+      dockerfile: docker/local/email-send-worker.local.Dockerfile
     restart: unless-stopped
     environment:
       NATS_URL: nats://nats:4222

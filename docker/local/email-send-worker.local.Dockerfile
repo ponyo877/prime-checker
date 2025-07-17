@@ -12,10 +12,7 @@ RUN go mod download
 # Copy source code
 COPY . .
 
-# Create air config if not exists
-RUN if [ ! -f .air.toml ]; then air init; fi
-
 # Expose port for debugging if needed
 EXPOSE 40000
 
-CMD ["air", "-c", ".air.toml", "--", "cmd/email-send-worker"]
+CMD ["air", "-c", "./cmd/email-send-worker/air.toml"]

@@ -12,10 +12,7 @@ RUN go mod download
 # Copy source code
 COPY . .
 
-# Create air config if not exists
-RUN if [ ! -f .air.toml ]; then air init; fi
-
 # Expose port for debugging if needed
 EXPOSE 40001
 
-CMD ["air", "-c", ".air.toml", "--", "cmd/outbox-publisher"]
+CMD ["air", "-c", "./cmd/outbox-publisher/air.toml"]
