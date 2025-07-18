@@ -52,7 +52,7 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
+      MYSQL_PORT: ${MYSQL_PORT}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -69,11 +69,12 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
+      MYSQL_PORT: ${MYSQL_PORT}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      NATS_URL: nats://nats:4222
+      NATS_HOST: nats
+      NATS_PORT: ${NATS_PORT}
     depends_on:
       mysql:
         condition: service_healthy
@@ -87,11 +88,12 @@ services:
     restart: unless-stopped
     environment:
       MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
+      MYSQL_PORT: ${MYSQL_PORT}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      NATS_URL: nats://nats:4222
+      NATS_HOST: nats
+      NATS_PORT: ${NATS_PORT}
     depends_on:
       mysql:
         condition: service_healthy
@@ -104,11 +106,11 @@ services:
       dockerfile: docker/local/email-send-worker.local.Dockerfile
     restart: unless-stopped
     environment:
-      NATS_URL: nats://nats:4222
-      SMTP_HOST: ${SMTP_HOST}
+      NATS_HOST: nats
+      NATS_PORT: ${NATS_PORT}
+      SMTP_HOST: mailpit
       SMTP_PORT: ${SMTP_PORT}
       SMTP_USERNAME: ${SMTP_USERNAME}
-      SMTP_PASSWORD: ${SMTP}
     depends_on:
       nats:
         condition: service_healthy

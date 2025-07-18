@@ -29,9 +29,8 @@ func main() {
 	smtpHost := os.Getenv("SMTP_HOST")
 	smtpPort := os.Getenv("SMTP_PORT")
 	username := os.Getenv("SMTP_USERNAME")
-	password := os.Getenv("SMTP_PASSWORD")
 
-	emailRepo := repository.NewEmailRepository(smtpHost, smtpPort, username, password)
+	emailRepo := repository.NewEmailRepository(smtpHost, smtpPort, username)
 	emailUsecase := usecase.NewEmailSendUsecase(emailRepo)
 	worker := adapter.NewEmailSendWorker(emailUsecase)
 

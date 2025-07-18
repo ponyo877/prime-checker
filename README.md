@@ -120,7 +120,6 @@ go run cmd/email-send-worker/main.go
 - `SMTP_HOST` - SMTP server host (default: localhost for mailpit)
 - `SMTP_PORT` - SMTP server port (default: 1025 for mailpit)
 - `SMTP_USERNAME` - SMTP username (default: test@example.com)
-- `SMTP_PASSWORD` - SMTP password (default: password)
 
 ## API Endpoints
 
