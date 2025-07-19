@@ -45,6 +45,16 @@ services:
       MP_SMTP_AUTH_ACCEPT_ANY: 1
       MP_SMTP_AUTH_ALLOW_INSECURE: 1
 
+  jaeger:
+    image: cr.jaegertracing.io/jaegertracing/jaeger:2.8.0
+    restart: always
+    ports:
+      - "16686:16686"  # Jaeger UI
+      - "4317:4317"    # OTLP gRPC receiver
+      - "4318:4318"    # OTLP HTTP receiver
+      - "5778:5778"    # Config server (legacy)
+      - "9411:9411"    # Zipkin receiver
+
   web-server:
     build:
       context: .
@@ -56,6 +66,8 @@ services:
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      JAEGER_HOST: jaeger
+      JAEGER_PORT: ${JAEGER_PORT}
     ports:
       - "8080:8080"
     volumes:
@@ -64,6 +76,8 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+      jaeger:
+        condition: service_started
 
   outbox-publisher:
     build:
@@ -78,6 +92,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       NATS_HOST: nats
       NATS_PORT: ${NATS_PORT}
+      JAEGER_HOST: jaeger
+      JAEGER_PORT: ${JAEGER_PORT}
     volumes:
       - .:/app
       - /app/tmp
@@ -85,7 +101,9 @@ services:
       mysql:
         condition: service_healthy
       nats:
-        condition: service_healthy    
+        condition: service_healthy
+      jaeger:
+        condition: service_started    
 
   prime-check-worker:
     build:
@@ -100,6 +118,8 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       NATS_HOST: nats
       NATS_PORT: ${NATS_PORT}
+      JAEGER_HOST: jaeger
+      JAEGER_PORT: ${JAEGER_PORT}
     volumes:
       - .:/app
       - /app/tmp
@@ -108,6 +128,8 @@ services:
         condition: service_healthy
       nats:
         condition: service_healthy
+      jaeger:
+        condition: service_started
 
   email-send-worker:
     build:
@@ -120,6 +142,8 @@ services:
       SMTP_HOST: mailpit
       SMTP_PORT: ${SMTP_PORT}
       SMTP_USERNAME: ${SMTP_USERNAME}
+      JAEGER_HOST: jaeger
+      JAEGER_PORT: ${JAEGER_PORT}
     volumes:
       - .:/app
       - /app/tmp
@@ -128,6 +152,8 @@ services:
         condition: service_healthy
       mailpit:
         condition: service_healthy
+      jaeger:
+        condition: service_started
 
 volumes:
   mysql_data:

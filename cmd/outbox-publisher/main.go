@@ -15,6 +15,14 @@ import (
 )
 
 func main() {
+	// Initialize tracing
+	tracingConfig := infrastructure.LoadTracingConfig("outbox-publisher")
+	tp, err := infrastructure.InitTracing(tracingConfig)
+	if err != nil {
+		log.Fatal("Failed to initialize tracing:", err)
+	}
+	defer infrastructure.ShutdownTracing(tp)
+
 	// Load configurations
 	dbConfig := config.LoadDatabaseConfig()
 	msgConfig := config.LoadMessagingConfig()
