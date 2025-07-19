@@ -5,6 +5,8 @@ import (
 	"log"
 	"time"
 
+	"go.opentelemetry.io/otel"
+
 	"github.com/ponyo877/product-expiry-tracker/internal/outbox/usecase"
 )
 
@@ -30,11 +32,18 @@ func (w *OutboxWorker) Start(ctx context.Context) error {
 			log.Println("Outbox worker stopped")
 			return ctx.Err()
 		case <-ticker.C:
-			results, err := w.usecase.PublishPendingMessages(ctx)
+			tracer := otel.Tracer("outbox-publisher")
+			tickerCtx, span := tracer.Start(ctx, "PublishPendingMessages")
+			
+			results, err := w.usecase.PublishPendingMessages(tickerCtx)
 			if err != nil {
+				span.RecordError(err)
 				log.Printf("Error publishing pending messages: %v", err)
+				span.End()
 				continue
 			}
+			
+			span.End()
 
 			successCount := 0
 			failedCount := 0

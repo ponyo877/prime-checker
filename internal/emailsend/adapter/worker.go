@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 
+	"go.opentelemetry.io/otel"
+
 	"github.com/ponyo877/product-expiry-tracker/internal/emailsend/model"
 	"github.com/ponyo877/product-expiry-tracker/internal/emailsend/usecase"
 	"github.com/ponyo877/product-expiry-tracker/internal/shared/message"
@@ -21,10 +23,19 @@ func NewEmailSendWorker(usecase *usecase.EmailSendUsecase) *EmailSendWorker {
 }
 
 func (w *EmailSendWorker) HandleMessage(ctx context.Context, msg *message.Message) error {
-	log.Printf("Processing email send message: %s", msg.ID)
+	// Extract trace context from message
+	ctx = msg.ExtractTraceContext(ctx)
+	
+	tracer := otel.Tracer("email-send-worker")
+	ctx, span := tracer.Start(ctx, "HandleEmailSendMessage")
+	defer span.End()
+
+	traceID := span.SpanContext().TraceID().String()
+	log.Printf("Processing email send message: %s with Trace ID: %s", msg.ID, traceID)
 
 	payload, err := msg.UnmarshalEmailSendPayload()
 	if err != nil {
+		span.RecordError(err)
 		return fmt.Errorf("failed to unmarshal payload: %w", err)
 	}
 
@@ -40,6 +51,7 @@ func (w *EmailSendWorker) HandleMessage(ctx context.Context, msg *message.Messag
 
 	result, err := w.usecase.SendPrimeCheckResult(request)
 	if err != nil {
+		span.RecordError(err)
 		return fmt.Errorf("failed to send email: %w", err)
 	}
 

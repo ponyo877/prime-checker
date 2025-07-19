@@ -67,14 +67,19 @@ func (r *Repository) CreatePrimeCheckWithMessage(ctx context.Context, userID int
 		return nil, err
 	}
 
-	// Create message for prime check worker
+	// Create message for prime check worker with trace context
 	payload := &message.PrimeCheckPayload{
 		RequestID:  int32(id),
 		UserID:     userID,
 		NumberText: numberText,
 	}
 
-	payloadBytes, err := json.Marshal(payload)
+	msg, err := message.NewMessageWithTraceContext(ctx, message.MessageTypePrimeCheck, payload)
+	if err != nil {
+		return nil, err
+	}
+
+	msgBytes, err := json.Marshal(msg)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +87,7 @@ func (r *Repository) CreatePrimeCheckWithMessage(ctx context.Context, userID int
 	// Save message to outbox
 	if _, err := txQueries.CreateOutboxMessage(ctx, generated_sql.CreateOutboxMessageParams{
 		EventType: string(message.MessageTypePrimeCheck),
-		Payload:   payloadBytes,
+		Payload:   msgBytes,
 	}); err != nil {
 		return nil, err
 	}

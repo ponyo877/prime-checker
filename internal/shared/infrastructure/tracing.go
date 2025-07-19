@@ -9,6 +9,7 @@ import (
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
+	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/sdk/resource"
 	"go.opentelemetry.io/otel/sdk/trace"
 	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
@@ -57,6 +58,12 @@ func InitTracing(config TracingConfig) (*trace.TracerProvider, error) {
 
 	// Set global tracer provider
 	otel.SetTracerProvider(tp)
+
+	// Set global propagator for trace context propagation
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(
+		propagation.TraceContext{},
+		propagation.Baggage{},
+	))
 
 	log.Printf("Tracing initialized for service: %s", config.ServiceName)
 	return tp, nil

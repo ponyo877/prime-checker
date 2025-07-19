@@ -2,9 +2,12 @@ package usecase
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"time"
+
+	"go.opentelemetry.io/otel"
 
 	"github.com/ponyo877/product-expiry-tracker/internal/outbox/model"
 	"github.com/ponyo877/product-expiry-tracker/internal/shared/message"
@@ -45,16 +48,33 @@ func (u *OutboxPublishingUsecase) PublishPendingMessages(ctx context.Context) ([
 }
 
 func (u *OutboxPublishingUsecase) publishSingleMessage(ctx context.Context, outboxMsg *model.OutboxMessage) *model.PublicationResult {
-	// Create message for broker
-	msg := &message.Message{
-		Type:      message.MessageType(outboxMsg.EventType()),
-		Payload:   outboxMsg.Payload(),
-		CreatedAt: outboxMsg.CreatedAt(),
+	tracer := otel.Tracer("outbox-publisher")
+	ctx, span := tracer.Start(ctx, "PublishSingleMessage")
+	defer span.End()
+
+	// Deserialize the stored message (which includes trace context)
+	var msg message.Message
+	if err := json.Unmarshal(outboxMsg.Payload(), &msg); err != nil {
+		log.Printf("Failed to unmarshal message ID %d: %v", outboxMsg.ID(), err)
+		now := time.Now()
+		return model.NewPublicationResult(outboxMsg.ID(), model.PublicationStatusFailed, err, now)
+	}
+
+	// Extract trace context and continue the trace
+	if msg.TraceContext != nil && len(msg.TraceContext) > 0 {
+		ctx = msg.ExtractTraceContext(ctx)
+		span.End() // End the current span
+		ctx, span = tracer.Start(ctx, "PublishSingleMessage") // Start a new span with the extracted context
+		defer span.End()
+		
+		traceID := span.SpanContext().TraceID().String()
+		log.Printf("Publishing message ID %d with Trace ID: %s", outboxMsg.ID(), traceID)
 	}
 
 	subject := u.getSubjectForEventType(outboxMsg.EventType())
 	now := time.Now()
-	if err := u.publisher.PublishMessage(ctx, subject, msg); err != nil {
+	if err := u.publisher.PublishMessage(ctx, subject, &msg); err != nil {
+		span.RecordError(err)
 		log.Printf("Failed to publish message ID %d: %v", outboxMsg.ID(), err)
 		return model.NewPublicationResult(outboxMsg.ID(), model.PublicationStatusFailed, err, now)
 	}

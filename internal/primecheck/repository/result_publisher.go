@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/ponyo877/product-expiry-tracker/internal/primecheck/model"
@@ -30,10 +31,15 @@ func (p *ResultPublisher) PublishEmailMessage(ctx context.Context, result *model
 		NumberText: result.NumberText(),
 	}
 
-	emailMsg, err := message.NewMessage(message.MessageTypeEmailSend, emailPayload)
+	emailMsg, err := message.NewMessageWithTraceContext(ctx, message.MessageTypeEmailSend, emailPayload)
 	if err != nil {
 		return fmt.Errorf("failed to create email message: %w", err)
 	}
 
-	return p.outboxRepo.CreateOutboxMessage(ctx, string(message.MessageTypeEmailSend), emailMsg.Payload)
+	msgBytes, err := json.Marshal(emailMsg)
+	if err != nil {
+		return fmt.Errorf("failed to marshal email message: %w", err)
+	}
+
+	return p.outboxRepo.CreateOutboxMessage(ctx, string(message.MessageTypeEmailSend), msgBytes)
 }

@@ -3,6 +3,8 @@ package usecase
 import (
 	"context"
 
+	"go.opentelemetry.io/otel"
+
 	"github.com/ponyo877/product-expiry-tracker/internal/web/model"
 )
 
@@ -25,5 +27,15 @@ func (u *Usecase) ListPrimeChecks(ctx context.Context) ([]*model.PrimeCheck, err
 }
 
 func (u *Usecase) CreatePrimeCheckWithMessage(ctx context.Context, userID int32, numberText string) (*model.PrimeCheck, error) {
-	return u.repo.CreatePrimeCheckWithMessage(ctx, userID, numberText)
+	tracer := otel.Tracer("web-server")
+	ctx, span := tracer.Start(ctx, "CreatePrimeCheckWithMessage")
+	defer span.End()
+
+	result, err := u.repo.CreatePrimeCheckWithMessage(ctx, userID, numberText)
+	if err != nil {
+		span.RecordError(err)
+		return nil, err
+	}
+
+	return result, nil
 }
