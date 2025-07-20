@@ -44,8 +44,24 @@ func main() {
 		log.Fatal(err)
 	}
 
-	// Wrap server with OpenTelemetry instrumentation
-	handler := otelhttp.NewHandler(srv, "web-server")
+	// CORS middleware
+	corsHandler := func(h http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+			
+			if r.Method == "OPTIONS" {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+			
+			h.ServeHTTP(w, r)
+		})
+	}
+
+	// Wrap server with CORS and OpenTelemetry instrumentation
+	handler := corsHandler(otelhttp.NewHandler(srv, "web-server"))
 
 	httpPort := ":8080"
 	fmt.Printf("Starting web server on %s\n", httpPort)

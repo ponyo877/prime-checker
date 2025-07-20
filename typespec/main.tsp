@@ -8,6 +8,10 @@ model PrimeCheck {
   id: int32;
   number: string;
   created_at: utcDateTime;
+  trace_id?: string;
+  message_id?: string;
+  is_prime?: boolean;
+  status?: string;
 }
 
 model PrimeCheckInput {
