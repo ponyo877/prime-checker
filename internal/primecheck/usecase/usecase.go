@@ -6,18 +6,22 @@ import (
 	"log"
 	"time"
 
+	"go.opentelemetry.io/otel/trace"
+
 	"github.com/ponyo877/product-expiry-tracker/internal/primecheck/model"
 )
 
 type PrimeCheckUsecase struct {
 	calculator PrimeCalculator
 	publisher  ResultPublisher
+	repository PrimeCheckRepository
 }
 
-func NewPrimeCheckUsecase(calculator PrimeCalculator, publisher ResultPublisher) *PrimeCheckUsecase {
+func NewPrimeCheckUsecase(calculator PrimeCalculator, publisher ResultPublisher, repository PrimeCheckRepository) *PrimeCheckUsecase {
 	return &PrimeCheckUsecase{
 		calculator: calculator,
 		publisher:  publisher,
+		repository: repository,
 	}
 }
 
@@ -29,6 +33,10 @@ func (u *PrimeCheckUsecase) ProcessPrimeRequest(ctx context.Context, request *mo
 	calculationTime := time.Since(startTime)
 
 	if err != nil {
+		// Update DB with failed status
+		if updateErr := u.repository.UpdatePrimeCheckResult(ctx, request.RequestID(), "", "", false, "failed"); updateErr != nil {
+			log.Printf("Failed to update prime check result in DB: %v", updateErr)
+		}
 		return nil, fmt.Errorf("failed to calculate prime: %w", err)
 	}
 
@@ -43,6 +51,14 @@ func (u *PrimeCheckUsecase) ProcessPrimeRequest(ctx context.Context, request *mo
 
 	log.Printf("Prime check result for %s: %v (took %v)", request.NumberText(), isPrime, calculationTime)
 
+	// Update DB with completed result
+	traceID := getTraceIDFromContext(ctx)
+	messageID := fmt.Sprintf("msg_%d_%d", request.RequestID(), time.Now().Unix())
+	if err := u.repository.UpdatePrimeCheckResult(ctx, request.RequestID(), traceID, messageID, isPrime, "completed"); err != nil {
+		log.Printf("Failed to update prime check result in DB: %v", err)
+		// Continue with email publishing even if DB update fails
+	}
+
 	// Publish result for email notification
 	if err := u.publisher.PublishEmailMessage(ctx, result); err != nil {
 		log.Printf("Failed to publish email message: %v", err)
@@ -50,4 +66,12 @@ func (u *PrimeCheckUsecase) ProcessPrimeRequest(ctx context.Context, request *mo
 	}
 
 	return result, nil
+}
+
+func getTraceIDFromContext(ctx context.Context) string {
+	span := trace.SpanFromContext(ctx)
+	if span.SpanContext().IsValid() {
+		return span.SpanContext().TraceID().String()
+	}
+	return ""
 }

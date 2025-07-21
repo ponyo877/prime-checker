@@ -11,6 +11,20 @@ import (
 	"github.com/ponyo877/product-expiry-tracker/internal/web/usecase"
 )
 
+func convertNullStringToPtr(ns sql.NullString) *string {
+	if !ns.Valid {
+		return nil
+	}
+	return &ns.String
+}
+
+func convertNullBoolToPtr(nb sql.NullBool) *bool {
+	if !nb.Valid {
+		return nil
+	}
+	return &nb.Bool
+}
+
 type Repository struct {
 	db      *sql.DB
 	queries *generated_sql.Queries
@@ -29,7 +43,17 @@ func (r *Repository) GetPrimeCheck(ctx context.Context, id int32) (*model.PrimeC
 		return nil, err
 	}
 
-	return model.NewPrimeCheck(test.ID, test.UserID, test.NumberText, test.CreatedAt, test.UpdatedAt), nil
+	return model.NewPrimeCheckWithExtras(
+		test.ID, 
+		test.UserID, 
+		test.NumberText, 
+		test.CreatedAt, 
+		test.UpdatedAt,
+		convertNullStringToPtr(test.TraceID),
+		convertNullStringToPtr(test.MessageID),
+		convertNullBoolToPtr(test.IsPrime),
+		convertNullStringToPtr(test.Status),
+	), nil
 }
 
 func (r *Repository) ListPrimeChecks(ctx context.Context) ([]*model.PrimeCheck, error) {
@@ -40,7 +64,17 @@ func (r *Repository) ListPrimeChecks(ctx context.Context) ([]*model.PrimeCheck, 
 
 	result := []*model.PrimeCheck{}
 	for _, test := range tests {
-		result = append(result, model.NewPrimeCheck(test.ID, test.UserID, test.NumberText, test.CreatedAt, test.UpdatedAt))
+		result = append(result, model.NewPrimeCheckWithExtras(
+			test.ID, 
+			test.UserID, 
+			test.NumberText, 
+			test.CreatedAt, 
+			test.UpdatedAt,
+			convertNullStringToPtr(test.TraceID),
+			convertNullStringToPtr(test.MessageID),
+			convertNullBoolToPtr(test.IsPrime),
+			convertNullStringToPtr(test.Status),
+		))
 	}
 	return result, nil
 }
@@ -103,5 +137,15 @@ func (r *Repository) CreatePrimeCheckWithMessage(ctx context.Context, userID int
 		return nil, err
 	}
 
-	return model.NewPrimeCheck(check.ID, check.UserID, check.NumberText, check.CreatedAt, check.UpdatedAt), nil
+	return model.NewPrimeCheckWithExtras(
+		check.ID, 
+		check.UserID, 
+		check.NumberText, 
+		check.CreatedAt, 
+		check.UpdatedAt,
+		convertNullStringToPtr(check.TraceID),
+		convertNullStringToPtr(check.MessageID),
+		convertNullBoolToPtr(check.IsPrime),
+		convertNullStringToPtr(check.Status),
+	), nil
 }

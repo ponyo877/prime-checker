@@ -63,11 +63,107 @@ func (s *ErrorStatusCode) SetResponse(val Error) {
 	s.Response = val
 }
 
+// NewOptBool returns new OptBool with value set to v.
+func NewOptBool(v bool) OptBool {
+	return OptBool{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptBool is optional bool.
+type OptBool struct {
+	Value bool
+	Set   bool
+}
+
+// IsSet returns true if OptBool was set.
+func (o OptBool) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptBool) Reset() {
+	var v bool
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptBool) SetTo(v bool) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptBool) Get() (v bool, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptBool) Or(d bool) bool {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
+// NewOptString returns new OptString with value set to v.
+func NewOptString(v string) OptString {
+	return OptString{
+		Value: v,
+		Set:   true,
+	}
+}
+
+// OptString is optional string.
+type OptString struct {
+	Value string
+	Set   bool
+}
+
+// IsSet returns true if OptString was set.
+func (o OptString) IsSet() bool { return o.Set }
+
+// Reset unsets value.
+func (o *OptString) Reset() {
+	var v string
+	o.Value = v
+	o.Set = false
+}
+
+// SetTo sets value to v.
+func (o *OptString) SetTo(v string) {
+	o.Set = true
+	o.Value = v
+}
+
+// Get returns value and boolean that denotes whether value was set.
+func (o OptString) Get() (v string, ok bool) {
+	if !o.Set {
+		return v, false
+	}
+	return o.Value, true
+}
+
+// Or returns value if set, or given parameter if does not.
+func (o OptString) Or(d string) string {
+	if v, ok := o.Get(); ok {
+		return v
+	}
+	return d
+}
+
 // Ref: #/components/schemas/PrimeCheck
 type PrimeCheck struct {
 	ID        int32     `json:"id"`
 	Number    string    `json:"number"`
 	CreatedAt time.Time `json:"created_at"`
+	TraceID   OptString `json:"trace_id"`
+	MessageID OptString `json:"message_id"`
+	IsPrime   OptBool   `json:"is_prime"`
+	Status    OptString `json:"status"`
 }
 
 // GetID returns the value of ID.
@@ -85,6 +181,26 @@ func (s *PrimeCheck) GetCreatedAt() time.Time {
 	return s.CreatedAt
 }
 
+// GetTraceID returns the value of TraceID.
+func (s *PrimeCheck) GetTraceID() OptString {
+	return s.TraceID
+}
+
+// GetMessageID returns the value of MessageID.
+func (s *PrimeCheck) GetMessageID() OptString {
+	return s.MessageID
+}
+
+// GetIsPrime returns the value of IsPrime.
+func (s *PrimeCheck) GetIsPrime() OptBool {
+	return s.IsPrime
+}
+
+// GetStatus returns the value of Status.
+func (s *PrimeCheck) GetStatus() OptString {
+	return s.Status
+}
+
 // SetID sets the value of ID.
 func (s *PrimeCheck) SetID(val int32) {
 	s.ID = val
@@ -98,6 +214,26 @@ func (s *PrimeCheck) SetNumber(val string) {
 // SetCreatedAt sets the value of CreatedAt.
 func (s *PrimeCheck) SetCreatedAt(val time.Time) {
 	s.CreatedAt = val
+}
+
+// SetTraceID sets the value of TraceID.
+func (s *PrimeCheck) SetTraceID(val OptString) {
+	s.TraceID = val
+}
+
+// SetMessageID sets the value of MessageID.
+func (s *PrimeCheck) SetMessageID(val OptString) {
+	s.MessageID = val
+}
+
+// SetIsPrime sets the value of IsPrime.
+func (s *PrimeCheck) SetIsPrime(val OptBool) {
+	s.IsPrime = val
+}
+
+// SetStatus sets the value of Status.
+func (s *PrimeCheck) SetStatus(val OptString) {
+	s.Status = val
 }
 
 // Ref: #/components/schemas/PrimeCheckInput
@@ -133,7 +269,7 @@ func (s *PrimeCheckList) SetItems(val []PrimeCheck) {
 // Ref: #/components/schemas/Setting
 type Setting struct {
 	RecordNumberSuccess bool `json:"record_number_success"`
-	PrimeRequestSuccess bool `json:"prime_request_success"`
+	PrimeCheckSuccess   bool `json:"prime_check_success"`
 	EmailSendSuccess    bool `json:"email_send_success"`
 	DlqSaveSuccess      bool `json:"dlq_save_success"`
 }
@@ -143,9 +279,9 @@ func (s *Setting) GetRecordNumberSuccess() bool {
 	return s.RecordNumberSuccess
 }
 
-// GetPrimeRequestSuccess returns the value of PrimeRequestSuccess.
-func (s *Setting) GetPrimeRequestSuccess() bool {
-	return s.PrimeRequestSuccess
+// GetPrimeCheckSuccess returns the value of PrimeCheckSuccess.
+func (s *Setting) GetPrimeCheckSuccess() bool {
+	return s.PrimeCheckSuccess
 }
 
 // GetEmailSendSuccess returns the value of EmailSendSuccess.
@@ -163,9 +299,9 @@ func (s *Setting) SetRecordNumberSuccess(val bool) {
 	s.RecordNumberSuccess = val
 }
 
-// SetPrimeRequestSuccess sets the value of PrimeRequestSuccess.
-func (s *Setting) SetPrimeRequestSuccess(val bool) {
-	s.PrimeRequestSuccess = val
+// SetPrimeCheckSuccess sets the value of PrimeCheckSuccess.
+func (s *Setting) SetPrimeCheckSuccess(val bool) {
+	s.PrimeCheckSuccess = val
 }
 
 // SetEmailSendSuccess sets the value of EmailSendSuccess.

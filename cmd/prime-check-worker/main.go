@@ -43,9 +43,10 @@ func main() {
 	// Create dependencies (DI)
 	queries := infrastructure.NewQueries(db)
 	outboxRepo := repository.NewOutboxRepository(queries)
+	primeCheckRepo := repository.NewPrimeCheckRepository(db)
 	calculator := repository.NewPrimeCalculator()
 	publisher := repository.NewResultPublisher(outboxRepo)
-	primeUsecase := usecase.NewPrimeCheckUsecase(calculator, publisher)
+	primeUsecase := usecase.NewPrimeCheckUsecase(calculator, publisher, primeCheckRepo)
 	worker := adapter.NewPrimeCheckWorker(primeUsecase)
 
 	// Setup graceful shutdown

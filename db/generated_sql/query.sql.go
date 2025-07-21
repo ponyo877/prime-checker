@@ -25,7 +25,7 @@ func (q *Queries) CreateOutboxMessage(ctx context.Context, arg CreateOutboxMessa
 }
 
 const createPrimeCheck = `-- name: CreatePrimeCheck :execresult
-INSERT INTO prime_checks (user_id, number_text) VALUES (?, ?)
+INSERT INTO prime_checks (user_id, number_text, status) VALUES (?, ?, 'processing')
 `
 
 type CreatePrimeCheckParams struct {
@@ -42,6 +42,10 @@ SELECT
     id,
     user_id,
     number_text,
+    trace_id,
+    message_id,
+    is_prime,
+    status,
     created_at,
     updated_at
 FROM prime_checks
@@ -56,6 +60,10 @@ func (q *Queries) GetPrimeCheck(ctx context.Context, id int32) (PrimeCheck, erro
 		&i.ID,
 		&i.UserID,
 		&i.NumberText,
+		&i.TraceID,
+		&i.MessageID,
+		&i.IsPrime,
+		&i.Status,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -111,6 +119,10 @@ SELECT
     id,
     user_id,
     number_text,
+    trace_id,
+    message_id,
+    is_prime,
+    status,
     created_at,
     updated_at
 FROM prime_checks
@@ -130,6 +142,10 @@ func (q *Queries) ListPrimeChecks(ctx context.Context) ([]PrimeCheck, error) {
 			&i.ID,
 			&i.UserID,
 			&i.NumberText,
+			&i.TraceID,
+			&i.MessageID,
+			&i.IsPrime,
+			&i.Status,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -157,5 +173,36 @@ WHERE
 
 func (q *Queries) MarkOutboxMessageProcessed(ctx context.Context, id int32) error {
 	_, err := q.db.ExecContext(ctx, markOutboxMessageProcessed, id)
+	return err
+}
+
+const updatePrimeCheckResult = `-- name: UpdatePrimeCheckResult :exec
+UPDATE prime_checks
+SET
+    trace_id = ?,
+    message_id = ?,
+    is_prime = ?,
+    status = ?,
+    updated_at = CURRENT_TIMESTAMP
+WHERE
+    id = ?
+`
+
+type UpdatePrimeCheckResultParams struct {
+	TraceID   sql.NullString
+	MessageID sql.NullString
+	IsPrime   sql.NullBool
+	Status    sql.NullString
+	ID        int32
+}
+
+func (q *Queries) UpdatePrimeCheckResult(ctx context.Context, arg UpdatePrimeCheckResultParams) error {
+	_, err := q.db.ExecContext(ctx, updatePrimeCheckResult,
+		arg.TraceID,
+		arg.MessageID,
+		arg.IsPrime,
+		arg.Status,
+		arg.ID,
+	)
 	return err
 }

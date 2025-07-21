@@ -44,10 +44,18 @@ func (h *handler) PrimeChecksCreate(ctx context.Context, req *openapi.PrimeCheck
 
 	span.SetAttributes(attribute.Int("request_id", int(test.ID())))
 
+	// Set trace ID for the created prime check
+	test.SetTraceID(traceID)
+	test.SetStatus("processing")
+
 	return &openapi.PrimeCheck{
 		ID:        test.ID(),
 		Number:    test.NumberText(),
 		CreatedAt: test.CreatedAt(),
+		TraceID:   convertStringPtrToOptString(test.TraceID()),
+		MessageID: convertStringPtrToOptString(test.MessageID()),
+		IsPrime:   convertBoolPtrToOptBool(test.IsPrime()),
+		Status:    convertStringPtrToOptString(test.Status()),
 	}, nil
 }
 
@@ -61,6 +69,10 @@ func (h *handler) PrimeChecksGet(ctx context.Context, params openapi.PrimeChecks
 		ID:        test.ID(),
 		Number:    test.NumberText(),
 		CreatedAt: test.CreatedAt(),
+		TraceID:   convertStringPtrToOptString(test.TraceID()),
+		MessageID: convertStringPtrToOptString(test.MessageID()),
+		IsPrime:   convertBoolPtrToOptBool(test.IsPrime()),
+		Status:    convertStringPtrToOptString(test.Status()),
 	}, nil
 }
 
@@ -83,6 +95,10 @@ func (h *handler) PrimeChecksList(ctx context.Context) (r *openapi.PrimeCheckLis
 			ID:        test.ID(),
 			Number:    test.NumberText(),
 			CreatedAt: test.CreatedAt(),
+			TraceID:   convertStringPtrToOptString(test.TraceID()),
+			MessageID: convertStringPtrToOptString(test.MessageID()),
+			IsPrime:   convertBoolPtrToOptBool(test.IsPrime()),
+			Status:    convertStringPtrToOptString(test.Status()),
 		}
 	}
 
@@ -107,4 +123,18 @@ func (h *handler) NewError(ctx context.Context, err error) *openapi.ErrorStatusC
 			Message: err.Error(),
 		},
 	}
+}
+
+func convertStringPtrToOptString(ptr *string) openapi.OptString {
+	if ptr == nil {
+		return openapi.OptString{}
+	}
+	return openapi.NewOptString(*ptr)
+}
+
+func convertBoolPtrToOptBool(ptr *bool) openapi.OptBool {
+	if ptr == nil {
+		return openapi.OptBool{}
+	}
+	return openapi.NewOptBool(*ptr)
 }

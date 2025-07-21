@@ -60,7 +60,7 @@ tasks:
       - go generate ./cmd/web-server/main.go
     sources:
       - typespec/tsp-output/@typespec/openapi3/openapi.yaml
-      - ./main.go
+      - ./cmd/web-server/main.go
     generates:
       - ./openapi/oas_cfg_gen.go
       - ./openapi/oas_client_gen.go

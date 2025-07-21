@@ -5,6 +5,7 @@
 package generated_sql
 
 import (
+	"database/sql"
 	"encoding/json"
 	"time"
 )
@@ -22,6 +23,10 @@ type PrimeCheck struct {
 	ID         int32
 	UserID     int32
 	NumberText string
+	TraceID    sql.NullString
+	MessageID  sql.NullString
+	IsPrime    sql.NullBool
+	Status     sql.NullString
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

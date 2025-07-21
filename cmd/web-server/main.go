@@ -15,7 +15,7 @@ import (
 	"github.com/ponyo877/product-expiry-tracker/openapi"
 )
 
-//go:generate go run github.com/ogen-go/ogen/cmd/ogen@latest --target ./openapi -package openapi --clean ../../typespec/tsp-output/@typespec/openapi3/openapi.yaml
+//go:generate go run github.com/ogen-go/ogen/cmd/ogen@latest --target ../../openapi --package openapi --clean ../../typespec/tsp-output/@typespec/openapi3/openapi.yaml
 
 func main() {
 	// Initialize tracing
@@ -50,12 +50,12 @@ func main() {
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
-			
+
 			if r.Method == "OPTIONS" {
 				w.WriteHeader(http.StatusOK)
 				return
 			}
-			
+
 			h.ServeHTTP(w, r)
 		})
 	}
