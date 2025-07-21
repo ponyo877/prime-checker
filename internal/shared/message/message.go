@@ -39,6 +39,7 @@ type EmailSendPayload struct {
 	Body       string `json:"body"`
 	IsPrime    bool   `json:"is_prime"`
 	NumberText string `json:"number_text"`
+	MessageID  string `json:"message_id"`
 }
 
 func NewMessage(msgType MessageType, payload interface{}) (*Message, error) {
@@ -93,7 +94,7 @@ func (m *Message) UnmarshalEmailSendPayload() (*EmailSendPayload, error) {
 }
 
 func (m *Message) ExtractTraceContext(ctx context.Context) context.Context {
-	if m.TraceContext == nil || len(m.TraceContext) == 0 {
+	if len(m.TraceContext) == 0 {
 		return ctx
 	}
 

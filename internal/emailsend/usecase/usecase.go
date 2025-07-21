@@ -29,7 +29,7 @@ func (u *EmailSendUsecase) SendPrimeCheckResult(request *model.EmailRequest) (*m
 		body = fmt.Sprintf("The number %s is not a prime number.", request.NumberText())
 	}
 
-	if err := u.repo.SendEmail(request.Email(), subject, body); err != nil {
+	if err := u.repo.SendEmail(request.Email(), subject, body, request.MessageID()); err != nil {
 		log.Printf("Failed to send email: %v", err)
 		return model.NewSendResult(request.RequestID(), model.SendStatusFailed, err), fmt.Errorf("failed to send email: %w", err)
 	}

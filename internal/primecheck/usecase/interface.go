@@ -12,7 +12,7 @@ type PrimeCalculator interface {
 }
 
 type ResultPublisher interface {
-	PublishEmailMessage(ctx context.Context, result *model.PrimeResult) error
+	PublishEmailMessage(ctx context.Context, result *model.PrimeResult, messageID string) error
 }
 
 type OutboxRepository interface {

@@ -120,7 +120,7 @@ const PrimeResultItem: React.FC<PrimeResultItemProps> = ({ primeCheck }) => {
         </div>
         <div className="mt-5 flex lg:mt-0 lg:ml-4">
           <ActionButton
-            href={primeCheck.message_id ? `http://localhost:8025/search?query=${primeCheck.message_id}` : undefined}
+            href={primeCheck.message_id ? `http://localhost:8025/search?q=message-id:${primeCheck.message_id}` : undefined}
             icon={EnvelopeIcon}
             label="Email"
             disabled={!primeCheck.message_id}

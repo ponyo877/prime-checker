@@ -20,7 +20,7 @@ func NewResultPublisher(outboxRepo usecase.OutboxRepository) usecase.ResultPubli
 	}
 }
 
-func (p *ResultPublisher) PublishEmailMessage(ctx context.Context, result *model.PrimeResult) error {
+func (p *ResultPublisher) PublishEmailMessage(ctx context.Context, result *model.PrimeResult, messageID string) error {
 	emailPayload := &message.EmailSendPayload{
 		RequestID:  result.RequestID(),
 		UserID:     result.UserID(),
@@ -29,6 +29,7 @@ func (p *ResultPublisher) PublishEmailMessage(ctx context.Context, result *model
 		Body:       fmt.Sprintf("The number %s is prime: %v", result.NumberText(), result.IsPrime()),
 		IsPrime:    result.IsPrime(),
 		NumberText: result.NumberText(),
+		MessageID:  messageID,
 	}
 
 	emailMsg, err := message.NewMessageWithTraceContext(ctx, message.MessageTypeEmailSend, emailPayload)

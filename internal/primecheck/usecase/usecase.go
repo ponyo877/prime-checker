@@ -60,7 +60,7 @@ func (u *PrimeCheckUsecase) ProcessPrimeRequest(ctx context.Context, request *mo
 	}
 
 	// Publish result for email notification
-	if err := u.publisher.PublishEmailMessage(ctx, result); err != nil {
+	if err := u.publisher.PublishEmailMessage(ctx, result, messageID); err != nil {
 		log.Printf("Failed to publish email message: %v", err)
 		// Don't return error here - the calculation was successful
 	}

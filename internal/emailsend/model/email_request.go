@@ -10,10 +10,11 @@ type EmailRequest struct {
 	body       string
 	isPrime    bool
 	numberText string
+	messageID  string
 	timestamp  time.Time
 }
 
-func NewEmailRequest(requestID, userID int32, email, subject, body string, isPrime bool, numberText string) *EmailRequest {
+func NewEmailRequest(requestID, userID int32, email, subject, body string, isPrime bool, numberText, messageID string) *EmailRequest {
 	return &EmailRequest{
 		requestID:  requestID,
 		userID:     userID,
@@ -22,6 +23,7 @@ func NewEmailRequest(requestID, userID int32, email, subject, body string, isPri
 		body:       body,
 		isPrime:    isPrime,
 		numberText: numberText,
+		messageID:  messageID,
 		timestamp:  time.Now(),
 	}
 }
@@ -52,6 +54,10 @@ func (e *EmailRequest) IsPrime() bool {
 
 func (e *EmailRequest) NumberText() string {
 	return e.numberText
+}
+
+func (e *EmailRequest) MessageID() string {
+	return e.messageID
 }
 
 func (e *EmailRequest) Timestamp() time.Time {

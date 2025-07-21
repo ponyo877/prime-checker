@@ -47,6 +47,7 @@ func (w *EmailSendWorker) HandleMessage(ctx context.Context, msg *message.Messag
 		payload.Body,
 		payload.IsPrime,
 		payload.NumberText,
+		payload.MessageID,
 	)
 
 	result, err := w.usecase.SendPrimeCheckResult(request)
