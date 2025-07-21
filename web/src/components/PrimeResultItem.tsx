@@ -1,4 +1,14 @@
 import React from 'react'
+import { 
+  CheckCircleIcon,
+  XCircleIcon,
+  ClockIcon,
+  IdentificationIcon,
+  CalendarIcon,
+  MagnifyingGlassIcon,
+  EnvelopeIcon,
+  EyeIcon
+} from '@heroicons/react/20/solid'
 import { PrimeCheck } from '../generated-client/primeApi.schemas'
 
 interface PrimeResultItemProps {
@@ -40,61 +50,70 @@ const PrimeResultItem: React.FC<PrimeResultItemProps> = ({ primeCheck }) => {
   const primeResult = getPrimeResult(primeCheck.is_prime)
 
   return (
-    <div className="border border-gray-200 rounded-xl p-6 mb-4 bg-white transition-colors hover:border-gray-300">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h3 className="text-3xl font-bold text-gray-900 mb-2">{primeCheck.number}</h3>
-          <p className={`text-base font-medium ${primeResult.className}`}>
-            {primeResult.text}
-          </p>
-        </div>
-        {getStatusBadge(primeCheck.status)}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5 text-sm text-gray-600">
-        <div className="flex justify-between">
-          <span className="font-medium">ID</span>
-          <span>{primeCheck.id}</span>
-        </div>
-        <div className="flex justify-between">
-          <span className="font-medium">Created</span>
-          <span>{formatDate(primeCheck.created_at)}</span>
-        </div>
-        {primeCheck.trace_id && (
-          <div className="flex justify-between">
-            <span className="font-medium">Trace ID</span>
-            <span>{primeCheck.trace_id.slice(0, 8)}...</span>
+    <div className="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+      <div className="lg:flex lg:items-center lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-2xl/7 font-bold text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+            {primeCheck.number}
+          </h2>
+          <div className="mt-1 flex flex-col sm:mt-0 sm:flex-row sm:flex-wrap sm:space-x-6">
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              {primeResult.className === 'text-green-600' ? (
+                <CheckCircleIcon className="mr-1.5 size-4 shrink-0 text-green-500" />
+              ) : primeResult.className === 'text-red-600' ? (
+                <XCircleIcon className="mr-1.5 size-4 shrink-0 text-red-500" />
+              ) : (
+                <ClockIcon className="mr-1.5 size-4 shrink-0 text-gray-400" />
+              )}
+              {primeResult.text}
+            </div>
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <IdentificationIcon className="mr-1.5 size-4 shrink-0 text-gray-400" />
+              ID: {primeCheck.id}
+            </div>
+            <div className="mt-2 flex items-center text-sm text-gray-500">
+              <CalendarIcon className="mr-1.5 size-4 shrink-0 text-gray-400" />
+              {formatDate(primeCheck.created_at)}
+            </div>
+            {primeCheck.trace_id && (
+              <div className="mt-2 flex items-center text-sm text-gray-500">
+                <MagnifyingGlassIcon className="mr-1.5 size-4 shrink-0 text-gray-400" />
+                Trace: {primeCheck.trace_id.slice(0, 8)}...
+              </div>
+            )}
           </div>
-        )}
-        {primeCheck.message_id && (
-          <div className="flex justify-between">
-            <span className="font-medium">Message ID</span>
-            <span>{primeCheck.message_id}</span>
-          </div>
-        )}
-      </div>
+        </div>
+        <div className="mt-5 flex lg:mt-0 lg:ml-4">
+          {getStatusBadge(primeCheck.status)}
+          
+          {primeCheck.message_id && (
+            <span className="ml-3">
+              <a
+                href={`http://localhost:8025/search?query=${primeCheck.message_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
+              >
+                <EnvelopeIcon className="mr-1.5 -ml-0.5 size-4 text-gray-400" />
+                Email
+              </a>
+            </span>
+          )}
 
-      <div className="flex gap-3 flex-wrap">
-        {primeCheck.message_id && (
-          <a
-            href={`http://localhost:8025/search?query=${primeCheck.message_id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-md hover:opacity-80 transition-opacity"
-          >
-            Email
-          </a>
-        )}
-        {primeCheck.trace_id && (
-          <a
-            href={`http://localhost:16686/trace/${primeCheck.trace_id}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 border border-gray-200 rounded-md hover:opacity-80 transition-opacity"
-          >
-            Trace
-          </a>
-        )}
+          {primeCheck.trace_id && (
+            <span className="ml-3">
+              <a
+                href={`http://localhost:16686/trace/${primeCheck.trace_id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                <EyeIcon className="mr-1.5 -ml-0.5 size-4" />
+                View Trace
+              </a>
+            </span>
+          )}
+        </div>
       </div>
     </div>
   )
