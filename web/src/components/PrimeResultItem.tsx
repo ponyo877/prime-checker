@@ -15,24 +15,48 @@ interface PrimeResultItemProps {
 }
 
 interface ActionButtonProps {
-  href: string
+  href?: string
   icon: React.ElementType
   label: string
+  disabled?: boolean
 }
 
-const ActionButton: React.FC<ActionButtonProps> = ({ href, icon: Icon, label }) => (
-  <span className="ml-3">
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-gray-300 ring-inset hover:bg-gray-50"
-    >
-      <Icon className="mr-1.5 -ml-0.5 size-4 text-gray-400" />
-      {label}
-    </a>
-  </span>
-)
+const ActionButton: React.FC<ActionButtonProps> = ({ href, icon: Icon, label, disabled = false }) => {
+  const baseClasses = "inline-flex items-center rounded-md px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset"
+  const enabledClasses = "bg-white text-gray-900 ring-gray-300 hover:bg-gray-50"
+  const disabledClasses = "bg-gray-50 text-gray-400 ring-gray-200 cursor-not-allowed"
+  
+  const buttonClasses = `${baseClasses} ${disabled ? disabledClasses : enabledClasses}`
+  const iconClasses = `mr-1.5 -ml-0.5 size-4 ${disabled ? 'text-gray-300' : 'text-gray-400'}`
+
+  if (disabled || !href) {
+    return (
+      <span className="ml-3">
+        <button
+          disabled
+          className={buttonClasses}
+        >
+          <Icon className={iconClasses} />
+          {label}
+        </button>
+      </span>
+    )
+  }
+
+  return (
+    <span className="ml-3">
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={buttonClasses}
+      >
+        <Icon className={iconClasses} />
+        {label}
+      </a>
+    </span>
+  )
+}
 
 const PrimeResultItem: React.FC<PrimeResultItemProps> = ({ primeCheck }) => {
   const formatDate = (dateString: string) => {
@@ -94,21 +118,19 @@ const PrimeResultItem: React.FC<PrimeResultItemProps> = ({ primeCheck }) => {
           </div>
         </div>
         <div className="mt-5 flex lg:mt-0 lg:ml-4">
-          {primeCheck.message_id && (
-            <ActionButton
-              href={`http://localhost:8025/search?query=${primeCheck.message_id}`}
-              icon={EnvelopeIcon}
-              label="Email"
-            />
-          )}
+          <ActionButton
+            href={primeCheck.message_id ? `http://localhost:8025/search?query=${primeCheck.message_id}` : undefined}
+            icon={EnvelopeIcon}
+            label="Email"
+            disabled={!primeCheck.message_id}
+          />
 
-          {primeCheck.trace_id && (
-            <ActionButton
-              href={`http://localhost:16686/trace/${primeCheck.trace_id}`}
-              icon={EyeIcon}
-              label="Trace"
-            />
-          )}
+          <ActionButton
+            href={primeCheck.trace_id ? `http://localhost:16686/trace/${primeCheck.trace_id}` : undefined}
+            icon={EyeIcon}
+            label="Trace"
+            disabled={!primeCheck.trace_id}
+          />
         </div>
       </div>
     </div>

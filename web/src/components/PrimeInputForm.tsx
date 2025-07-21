@@ -28,7 +28,7 @@ const PrimeInputForm: React.FC = () => {
           disabled={createPrimeCheck.isPending}
           className="px-6 py-3 text-base font-medium bg-gray-900 text-white border-none rounded-lg cursor-pointer transition-colors hover:bg-gray-700 disabled:bg-gray-400 disabled:cursor-not-allowed whitespace-nowrap"
         >
-          {createPrimeCheck.isPending ? 'Checking...' : 'Check'}
+          Check
         </button>
       </form>
       {createPrimeCheck.error && (
