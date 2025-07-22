@@ -2,7 +2,7 @@ import React from 'react'
 import {
   CheckCircleIcon,
   XCircleIcon,
-  ClockIcon,
+  QuestionMarkCircleIcon,
   IdentificationIcon,
   CalendarIcon,
   EnvelopeIcon,
@@ -84,7 +84,7 @@ const PrimeResultItem: React.FC<PrimeResultItemProps> = ({ primeCheck }) => {
 
   const getPrimeResult = (isPrime?: boolean) => {
     if (isPrime === undefined) {
-      return { text: 'Unknown', icon: ClockIcon, iconColor: 'text-gray-400' }
+      return { text: 'Unknown', icon: QuestionMarkCircleIcon, iconColor: 'text-gray-400' }
     }
     return isPrime
       ? { text: 'Prime', icon: CheckCircleIcon, iconColor: 'text-green-500' }
