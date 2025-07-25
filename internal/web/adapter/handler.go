@@ -8,8 +8,8 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/web/usecase"
-	"github.com/ponyo877/product-expiry-tracker/openapi"
+	"github.com/ponyo877/prime-checker/internal/web/usecase"
+	"github.com/ponyo877/prime-checker/openapi"
 )
 
 type handler struct {

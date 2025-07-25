@@ -143,14 +143,14 @@ tasks:
     desc: "Format Go code with goimports"
     cmds:
       - go fmt ./...
-      - goimports -w -local github.com/ponyo877/product-expiry-tracker .
+      - goimports -w -local github.com/ponyo877/prime-checker .
     sources:
       - '**/*.go'
 
   lint:
     desc: "Run linters"
     cmds:
-      - goimports -d -local github.com/ponyo877/product-expiry-tracker .
+      - goimports -d -local github.com/ponyo877/prime-checker .
       - go vet ./...
 
   # biome-format:

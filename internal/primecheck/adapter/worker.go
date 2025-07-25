@@ -8,9 +8,9 @@ import (
 
 	"go.opentelemetry.io/otel"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/primecheck/model"
-	"github.com/ponyo877/product-expiry-tracker/internal/primecheck/usecase"
-	"github.com/ponyo877/product-expiry-tracker/internal/shared/message"
+	"github.com/ponyo877/prime-checker/internal/primecheck/model"
+	"github.com/ponyo877/prime-checker/internal/primecheck/usecase"
+	"github.com/ponyo877/prime-checker/internal/shared/message"
 )
 
 type PrimeCheckWorker struct {

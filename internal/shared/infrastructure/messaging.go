@@ -9,7 +9,7 @@ import (
 
 	"github.com/nats-io/nats.go"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/shared/message"
+	"github.com/ponyo877/prime-checker/internal/shared/message"
 )
 
 type MessagingConfig struct {

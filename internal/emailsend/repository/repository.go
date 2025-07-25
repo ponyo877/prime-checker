@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/smtp"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/emailsend/usecase"
+	"github.com/ponyo877/prime-checker/internal/emailsend/usecase"
 )
 
 type emailRepository struct {

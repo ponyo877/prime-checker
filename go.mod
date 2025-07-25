@@ -1,4 +1,4 @@
-module github.com/ponyo877/product-expiry-tracker
+module github.com/ponyo877/prime-checker
 
 go 1.24.4
 

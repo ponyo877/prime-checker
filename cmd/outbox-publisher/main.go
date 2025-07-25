@@ -7,11 +7,11 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/outbox/adapter"
-	"github.com/ponyo877/product-expiry-tracker/internal/outbox/repository"
-	"github.com/ponyo877/product-expiry-tracker/internal/outbox/usecase"
-	"github.com/ponyo877/product-expiry-tracker/internal/shared/config"
-	"github.com/ponyo877/product-expiry-tracker/internal/shared/infrastructure"
+	"github.com/ponyo877/prime-checker/internal/outbox/adapter"
+	"github.com/ponyo877/prime-checker/internal/outbox/repository"
+	"github.com/ponyo877/prime-checker/internal/outbox/usecase"
+	"github.com/ponyo877/prime-checker/internal/shared/config"
+	"github.com/ponyo877/prime-checker/internal/shared/infrastructure"
 )
 
 func main() {

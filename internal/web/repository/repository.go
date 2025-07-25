@@ -5,10 +5,10 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/ponyo877/product-expiry-tracker/db/generated_sql"
-	"github.com/ponyo877/product-expiry-tracker/internal/shared/message"
-	"github.com/ponyo877/product-expiry-tracker/internal/web/model"
-	"github.com/ponyo877/product-expiry-tracker/internal/web/usecase"
+	"github.com/ponyo877/prime-checker/db/generated_sql"
+	"github.com/ponyo877/prime-checker/internal/shared/message"
+	"github.com/ponyo877/prime-checker/internal/web/model"
+	"github.com/ponyo877/prime-checker/internal/web/usecase"
 )
 
 func convertNullStringToPtr(ns sql.NullString) *string {

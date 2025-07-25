@@ -3,9 +3,9 @@ package adapter
 import (
 	"context"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/outbox/usecase"
-	"github.com/ponyo877/product-expiry-tracker/internal/shared/infrastructure"
-	"github.com/ponyo877/product-expiry-tracker/internal/shared/message"
+	"github.com/ponyo877/prime-checker/internal/outbox/usecase"
+	"github.com/ponyo877/prime-checker/internal/shared/infrastructure"
+	"github.com/ponyo877/prime-checker/internal/shared/message"
 )
 
 type MessagePublisher struct {

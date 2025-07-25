@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/web/model"
+	"github.com/ponyo877/prime-checker/internal/web/model"
 )
 
 type Repository interface {

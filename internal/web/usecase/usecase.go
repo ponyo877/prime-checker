@@ -5,7 +5,7 @@ import (
 
 	"go.opentelemetry.io/otel"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/web/model"
+	"github.com/ponyo877/prime-checker/internal/web/model"
 )
 
 type Usecase struct {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/primecheck/model"
+	"github.com/ponyo877/prime-checker/internal/primecheck/model"
 )
 
 type PrimeCalculator interface {

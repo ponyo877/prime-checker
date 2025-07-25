@@ -3,9 +3,9 @@ package repository
 import (
 	"context"
 
-	"github.com/ponyo877/product-expiry-tracker/db/generated_sql"
-	"github.com/ponyo877/product-expiry-tracker/internal/outbox/model"
-	"github.com/ponyo877/product-expiry-tracker/internal/outbox/usecase"
+	"github.com/ponyo877/prime-checker/db/generated_sql"
+	"github.com/ponyo877/prime-checker/internal/outbox/model"
+	"github.com/ponyo877/prime-checker/internal/outbox/usecase"
 )
 
 type OutboxRepository struct {

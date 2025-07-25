@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/emailsend/model"
+	"github.com/ponyo877/prime-checker/internal/emailsend/model"
 )
 
 type EmailSendUsecase struct {

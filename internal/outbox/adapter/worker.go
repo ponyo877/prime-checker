@@ -7,7 +7,7 @@ import (
 
 	"go.opentelemetry.io/otel"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/outbox/usecase"
+	"github.com/ponyo877/prime-checker/internal/outbox/usecase"
 )
 
 type OutboxWorker struct {

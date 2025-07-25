@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 
-	"github.com/ponyo877/product-expiry-tracker/db/generated_sql"
+	"github.com/ponyo877/prime-checker/db/generated_sql"
 )
 
 type DatabaseConfig struct {

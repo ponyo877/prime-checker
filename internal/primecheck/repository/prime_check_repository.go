@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/ponyo877/product-expiry-tracker/db/generated_sql"
-	"github.com/ponyo877/product-expiry-tracker/internal/primecheck/usecase"
+	"github.com/ponyo877/prime-checker/db/generated_sql"
+	"github.com/ponyo877/prime-checker/internal/primecheck/usecase"
 )
 
 type PrimeCheckRepository struct {

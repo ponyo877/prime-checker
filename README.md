@@ -14,7 +14,7 @@ The system consists of four main applications:
 ## Directory Structure
 
 ```
-product-expiry-tracker/
+prime-checker/
 ├── cmd/                           # Application entry points
 │   ├── web-server/               # HTTP API server
 │   ├── outbox-publisher/         # Outbox pattern publisher

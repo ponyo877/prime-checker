@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"github.com/ponyo877/product-expiry-tracker/internal/shared/infrastructure"
+	"github.com/ponyo877/prime-checker/internal/shared/infrastructure"
 )
 
 func LoadDatabaseConfig() infrastructure.DatabaseConfig {
